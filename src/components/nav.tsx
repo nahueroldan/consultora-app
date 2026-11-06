@@ -2,32 +2,45 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { FolderKanban, House, Lightbulb, FileText, Users, type LucideIcon } from "lucide-react";
 
-export type NavItem = { href: string; label: string };
+type NavDef = { href: string; label: string; Icon: LucideIcon };
+
+const MAIN: NavDef[] = [
+  { href: "/", label: "Inicio", Icon: House },
+  { href: "/propuestas", label: "Propuestas", Icon: FileText },
+  { href: "/ideas", label: "Ideas", Icon: Lightbulb },
+  { href: "/proyectos", label: "Proyectos", Icon: FolderKanban },
+  { href: "/directorio", label: "Directorio", Icon: Users },
+];
+
+// En móvil la barra inferior muestra los cuatro accesos principales.
+const MOBILE: NavDef[] = [MAIN[0], MAIN[1], MAIN[2], MAIN[4]];
 
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-/** Sidebar fijo en escritorio. */
-export function SidebarNav({ items }: { items: NavItem[] }) {
+/** Sidebar en escritorio. */
+export function SidebarNav() {
   const pathname = usePathname();
   return (
-    <nav aria-label="Principal" className="hidden w-60 shrink-0 flex-col gap-1 border-r border-line bg-surface p-4 md:flex">
-      <p className="mb-4 px-3 text-lg font-semibold text-accent">Consultora</p>
-      {items.map((item) => {
-        const active = isActive(pathname, item.href);
+    <nav aria-label="Principal" className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col gap-1 p-4 md:flex">
+      <p className="font-display mb-6 px-3 pt-2 text-xl text-accent">Consultora</p>
+      {MAIN.map(({ href, label, Icon }) => {
+        const active = isActive(pathname, href);
         return (
           <Link
-            key={item.href}
-            href={item.href}
+            key={href}
+            href={href}
             aria-current={active ? "page" : undefined}
-            className={`rounded-xl px-3 py-2 text-sm font-medium transition ${
-              active ? "bg-accent-soft text-accent" : "text-muted hover:bg-cream hover:text-ink"
+            className={`flex items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-medium transition ${
+              active ? "bg-accent text-white shadow-sm" : "text-muted hover:bg-surface hover:text-ink"
             }`}
           >
-            {item.label}
+            <Icon size={18} aria-hidden />
+            {label}
           </Link>
         );
       })}
@@ -35,27 +48,28 @@ export function SidebarNav({ items }: { items: NavItem[] }) {
   );
 }
 
-/** Barra inferior en móvil, con los accesos principales. */
-export function MobileNav({ items }: { items: NavItem[] }) {
+/** Barra inferior en móvil. */
+export function MobileNav() {
   const pathname = usePathname();
   return (
     <nav
       aria-label="Principal"
-      className="fixed inset-x-0 bottom-0 z-30 grid border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] md:hidden"
-      style={{ gridTemplateColumns: `repeat(${items.length}, minmax(0, 1fr))` }}
+      className="fixed inset-x-3 bottom-3 z-30 grid rounded-3xl border border-line bg-surface/95 p-1.5 shadow-lg backdrop-blur md:hidden"
+      style={{ gridTemplateColumns: `repeat(${MOBILE.length}, minmax(0, 1fr))` }}
     >
-      {items.map((item) => {
-        const active = isActive(pathname, item.href);
+      {MOBILE.map(({ href, label, Icon }) => {
+        const active = isActive(pathname, href);
         return (
           <Link
-            key={item.href}
-            href={item.href}
+            key={href}
+            href={href}
             aria-current={active ? "page" : undefined}
-            className={`flex min-h-14 items-center justify-center px-1 text-center text-xs font-medium ${
-              active ? "text-accent" : "text-muted"
+            className={`flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-2xl text-[11px] font-medium transition ${
+              active ? "bg-accent-soft text-accent" : "text-muted"
             }`}
           >
-            {item.label}
+            <Icon size={18} aria-hidden />
+            {label}
           </Link>
         );
       })}

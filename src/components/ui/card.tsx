@@ -1,17 +1,10 @@
 import Link from "next/link";
 
-export function Card({
-  children,
-  className = "",
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) {
-  return (
-    <div className={`rounded-2xl border border-line bg-surface p-5 shadow-sm ${className}`}>
-      {children}
-    </div>
-  );
+const base =
+  "rounded-3xl border border-line bg-surface shadow-[0_1px_2px_rgb(0_0_0/0.04),0_8px_24px_-12px_rgb(0_0_0/0.12)]";
+
+export function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <div className={`${base} p-5 ${className}`}>{children}</div>;
 }
 
 /** Card completa clickeable, con foco visible para teclado. */
@@ -27,7 +20,7 @@ export function LinkCard({
   return (
     <Link
       href={href}
-      className={`block rounded-2xl border border-line bg-surface p-5 shadow-sm transition hover:border-accent hover:shadow focus-visible:outline-2 focus-visible:outline-accent ${className}`}
+      className={`${base} block p-5 transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md focus-visible:outline-2 focus-visible:outline-accent ${className}`}
     >
       {children}
     </Link>
@@ -48,7 +41,7 @@ export function Badge({
     accent: "bg-accent-soft text-accent",
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${tones[tone]}`}>
+    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 font-mono text-xs ${tones[tone]}`}>
       {children}
     </span>
   );

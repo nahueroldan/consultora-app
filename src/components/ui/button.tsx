@@ -12,7 +12,7 @@ const variants: Record<Variant, string> = {
 };
 
 export const buttonBase =
-  "inline-flex min-h-10 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex min-h-10 items-center justify-center gap-2 rounded-2xl px-4 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60";
 
 /**
  * Botón de envío de formularios. Muestra su propio estado de carga mientras

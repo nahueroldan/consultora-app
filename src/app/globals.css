@@ -1,36 +1,68 @@
 @import "tailwindcss";
 
-/* Paleta cálida: crema de fondo, terracota de acento, café oscuro para texto. */
-@theme inline {
-  --color-cream: #fbf6ef;
-  --color-surface: #ffffff;
-  --color-ink: #2b211c;
-  --color-muted: #7a6a5f;
-  --color-line: #eadfd3;
-  --color-accent: #c2552b;
-  --color-accent-hover: #a94620;
-  --color-accent-soft: #fbe6da;
-  --color-success: #3f7d58;
-  --color-success-soft: #e3f1e8;
-  --color-warning: #9a6a12;
-  --color-warning-soft: #fbf0d6;
-  --color-danger: #b42318;
-  --color-danger-soft: #fde4e1;
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
+/* Tokens semánticos. Light por defecto; .dark los reemplaza. */
 :root {
+  --cream: #fff8e7;
+  --surface: #ffffff;
+  --ink: #1d1714;
+  --muted: #74655c;
+  --line: #eadfd3;
+  --accent: #c2552b;
+  --accent-hover: #a94620;
+  --accent-soft: #fbe6da;
+  --success: #2f7a50;
+  --success-soft: #dff1e6;
+  --warning: #8a5d0c;
+  --warning-soft: #fbefd0;
+  --danger: #b42318;
+  --danger-soft: #fde4e1;
   color-scheme: light;
 }
 
-body {
-  background: var(--color-cream);
-  color: var(--color-ink);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+.dark {
+  --cream: #14110f;
+  --surface: #1f1a17;
+  --ink: #f5ede6;
+  --muted: #a99a8f;
+  --line: #3a302b;
+  --accent: #ff8a5c;
+  --accent-hover: #ffa37f;
+  --accent-soft: #3a2118;
+  --success: #6fcf97;
+  --success-soft: #1d3327;
+  --warning: #f2c46b;
+  --warning-soft: #3b2f15;
+  --danger: #ff8a80;
+  --danger-soft: #3d1c1a;
+  color-scheme: dark;
 }
 
-/* Respeta a quien prefiere menos movimiento. */
+@theme inline {
+  --color-cream: var(--cream);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --font-sans: var(--font-archivo), Arial, Helvetica, sans-serif;
+  --font-display: var(--font-archivo-black), var(--font-archivo), sans-serif;
+  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+}
+
+body {
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-sans);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

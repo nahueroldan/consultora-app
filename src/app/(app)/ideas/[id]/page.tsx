@@ -81,7 +81,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
         <Card>
           <ServerForm action={setIdeaStatusAction} className="flex flex-wrap items-end gap-3">
             <input type="hidden" name="ideaId" value={idea.id} />
-            <label className="space-y-1 text-sm font-medium">
+            <label className="flex flex-col gap-1.5 text-sm font-medium">
               Estado
               <select name="status" defaultValue={idea.status} className={`${input} w-auto min-w-56`}>
                 {IDEA_STATUSES.filter((s) => s !== "convertida").map((s) => (
@@ -113,7 +113,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
         <Card>
           <ServerForm action={commentIdeaAction} className="space-y-3">
             <input type="hidden" name="ideaId" value={idea.id} />
-            <label className="block space-y-1 text-sm font-medium">
+            <label className="flex flex-col gap-1.5 text-sm font-medium">
               Tu comentario
               <textarea name="body" required maxLength={1000} rows={3} className={input} />
             </label>

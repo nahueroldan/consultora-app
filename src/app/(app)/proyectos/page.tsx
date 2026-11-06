@@ -34,23 +34,23 @@ async function Content() {
           <div data-tour="proyectos">
           <Dialog action={createProjectAction} triggerLabel="Nuevo proyecto" title="Nuevo proyecto" description="Solo el nombre es obligatorio.">
             
-                <label className="block space-y-1 text-sm font-medium">
+                <label className="flex flex-col gap-1.5 text-sm font-medium">
                   Nombre
                   <input name="name" required className={input} />
                 </label>
-                <label className="block space-y-1 text-sm font-medium">
+                <label className="flex flex-col gap-1.5 text-sm font-medium">
                   Cliente
                   <input name="client" className={input} />
                 </label>
-                <label className="block space-y-1 text-sm font-medium">
+                <label className="flex flex-col gap-1.5 text-sm font-medium">
                   Enlace del producto o sitio (opcional)
                   <input name="url" type="url" placeholder="https://…" className={input} />
                 </label>
-                <label className="block space-y-1 text-sm font-medium">
+                <label className="flex flex-col gap-1.5 text-sm font-medium">
                   Descripción
                   <textarea name="description" rows={3} className={input} />
                 </label>
-                <label className="block space-y-1 text-sm font-medium">
+                <label className="flex flex-col gap-1.5 text-sm font-medium">
                   Estado
                   <select name="status" defaultValue="propuesta" className={input}>
                     {PROJECT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}

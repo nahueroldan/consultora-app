@@ -43,19 +43,19 @@ export function MyProfileModal({
         <div className="h-full overflow-y-auto">
           <ServerForm action={action} onSuccess={onClose} className="space-y-5">
             <div className="grid gap-4 md:grid-cols-2">
-              <label className="space-y-1 text-sm font-medium">
+              <label className="flex flex-col gap-1.5 text-sm font-medium">
                 Puesto
                 <input name="position" defaultValue={profile.position ?? ""} className={input} />
               </label>
-              <label className="space-y-1 text-sm font-medium">
+              <label className="flex flex-col gap-1.5 text-sm font-medium">
                 Ciudad
                 <input name="city" defaultValue={profile.city ?? ""} className={input} />
               </label>
-              <label className="space-y-1 text-sm font-medium">
+              <label className="flex flex-col gap-1.5 text-sm font-medium">
                 País
                 <input name="country" defaultValue={profile.country ?? ""} className={input} />
               </label>
-              <label className="space-y-1 text-sm font-medium">
+              <label className="flex flex-col gap-1.5 text-sm font-medium">
                 LinkedIn (https://…)
                 <input name="linkedin" type="url" defaultValue={profile.linkedin ?? ""} className={input} />
               </label>

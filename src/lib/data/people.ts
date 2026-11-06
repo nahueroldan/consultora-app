@@ -168,6 +168,7 @@ export async function listPeopleByArea(input: {
       firstName: schema.people.firstName,
       lastName: schema.people.lastName,
       position: schema.people.position,
+      visibility: schema.people.visibility,
       status: schema.people.status,
     })
     .from(schema.people)

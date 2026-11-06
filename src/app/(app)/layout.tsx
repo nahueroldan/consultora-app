@@ -5,6 +5,7 @@ import { can } from "@/lib/auth/roles";
 import { requireUser } from "@/lib/auth/session";
 import { getTourClosed } from "@/lib/data/users";
 import { findCandidates, getUserLinkState } from "@/lib/data/profile";
+import { getOwnProfile } from "@/lib/data/own-profile";
 import { cookies } from "next/headers";
 import { DISMISS_COOKIE } from "@/lib/profile/gate-cookie";
 
@@ -16,6 +17,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
   const dismissed = (await cookies()).get(DISMISS_COOKIE)?.value === "1";
   const needsLink = !link?.personId && !link?.linkRequested && !dismissed;
   const linkCandidates = needsLink ? await findCandidates(link?.name ?? user.name ?? user.email) : null;
+  const ownProfile = link?.personId ? await getOwnProfile(link.personId) : null;
   return (
     <AppShell
       email={user.email}
@@ -23,6 +25,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
       isAdmin={can(user.role, "usuario:gestionar")}
       tourClosed={tourClosed}
       linkCandidates={linkCandidates}
+      ownProfile={ownProfile}
     >
       {children}
     </AppShell>

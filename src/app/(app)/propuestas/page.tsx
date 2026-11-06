@@ -8,10 +8,17 @@ import { CardSkeleton } from "@/components/ui/skeleton";
 import { can } from "@/lib/auth/roles";
 import { requireUser } from "@/lib/auth/session";
 import { listProjectOptions, listProposals } from "@/lib/data/proposals";
+import { getIdeaBasics } from "@/lib/data/ideas";
 import { createProposalAction } from "@/app/(app)/propuestas/actions";
 
-async function Content() {
+type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+async function Content({ searchParams }: { searchParams: SearchParams }) {
   await connection();
+  const params = await searchParams;
+  const ideaRaw = Array.isArray(params.idea) ? params.idea[0] : params.idea;
+  const ideaId = Number(ideaRaw);
+  const idea = Number.isInteger(ideaId) && ideaId > 0 ? await getIdeaBasics(ideaId) : null;
   const user = await requireUser();
   const canCreate = can(user.role, "propuesta:crear");
   const [proposals, projects] = await Promise.all([listProposals(), listProjectOptions()]);
@@ -23,7 +30,13 @@ async function Content() {
           <h1 className="text-2xl font-semibold tracking-tight">Propuestas</h1>
           <p className="text-sm text-muted">Armá el equipo por roles y descargá el PDF para el cliente.</p>
         </div>
-        {canCreate && <ProposalWizard projects={projects} action={createProposalAction} />}
+        {canCreate && (
+          <ProposalWizard
+            projects={projects}
+            action={createProposalAction}
+            initialIdea={idea ? { id: idea.id, title: idea.title } : null}
+          />
+        )}
       </div>
 
       {proposals.length === 0 ? (
@@ -50,10 +63,10 @@ async function Content() {
   );
 }
 
-export default function PropuestasPage() {
+export default function PropuestasPage({ searchParams }: { searchParams: SearchParams }) {
   return (
     <Suspense fallback={<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"><CardSkeleton /><CardSkeleton /><CardSkeleton /></div>}>
-      <Content />
+      <Content searchParams={searchParams} />
     </Suspense>
   );
 }

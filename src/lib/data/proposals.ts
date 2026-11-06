@@ -4,6 +4,7 @@ import type { ProposalItem } from "@/lib/proposals/total";
 
 export async function createProposal(input: {
   projectId: number;
+  ideaId?: number | null;
   title: string;
   discountPct: number;
   notes: string | null;
@@ -15,12 +16,16 @@ export async function createProposal(input: {
       .insert(schema.proposals)
       .values({
         projectId: input.projectId,
+        ideaId: input.ideaId ?? null,
         title: input.title,
         discountPct: input.discountPct,
         notes: input.notes,
         createdByEmail: input.createdByEmail,
       })
       .returning({ id: schema.proposals.id });
+    if (input.ideaId) {
+      await tx.update(schema.ideas).set({ status: "convertida" }).where(eq(schema.ideas.id, input.ideaId));
+    }
     if (input.items.length > 0) {
       await tx.insert(schema.proposalItems).values(
         input.items.map((i) => ({

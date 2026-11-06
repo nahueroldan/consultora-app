@@ -21,11 +21,14 @@ type Project = { id: number; name: string };
 export function ProposalWizard({
   projects,
   action,
+  initialIdea,
 }: {
   projects: Project[];
   action: (fd: FormData) => Promise<ActionResult>;
+  /** Idea de origen: abre el wizard con el título cargado y la vincula. */
+  initialIdea?: { id: number; title: string } | null;
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(Boolean(initialIdea));
   const [step, setStep] = useState(0);
   const [summary, setSummary] = useState<ProposalItem[]>([]);
   const [discount, setDiscount] = useState(0);
@@ -132,7 +135,14 @@ export function ProposalWizard({
                   </label>
                   <label className="block space-y-1 text-sm font-medium">
                     Título de la propuesta
-                    <input name="title" required placeholder="Ej.: Equipo para el módulo de pagos" className={input} />
+                    <input
+                      name="title"
+                      required
+                      defaultValue={initialIdea?.title ?? ""}
+                      placeholder="Ej.: Equipo para el módulo de pagos"
+                      className={input}
+                    />
+                  {initialIdea && <input type="hidden" name="ideaId" value={initialIdea.id} />}
                   </label>
                 </div>
 

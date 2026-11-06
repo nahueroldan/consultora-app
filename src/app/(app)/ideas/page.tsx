@@ -1,5 +1,10 @@
 import { Suspense } from "react";
 import { connection } from "next/server";
+import { Card } from "@/components/ui/card";
+import { Dialog } from "@/components/ui/dialog";
+import { EmptyState } from "@/components/ui/empty-state";
+import { CardSkeleton } from "@/components/ui/skeleton";
+import { SubmitButton } from "@/components/ui/button";
 import { can } from "@/lib/auth/roles";
 import { requireUser } from "@/lib/auth/session";
 import { listIdeas } from "@/lib/data/ideas";
@@ -13,33 +18,63 @@ async function Content() {
 
   return (
     <section className="space-y-6">
-      <h1 className="text-2xl font-semibold">Ideas</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Ideas</h1>
+          <p className="text-sm text-muted">Propuestas de producto y mejoras para el equipo.</p>
+        </div>
+        {canEdit && (
+          <Dialog triggerLabel="Nueva idea" title="Nueva idea" description="Contala en pocas palabras. Se puede ampliar después.">
+            {(close) => (
+              <form
+                action={async (fd) => {
+                  await createIdeaAction(fd);
+                  close();
+                }}
+                className="space-y-4"
+              >
+                <label className="block space-y-1 text-sm font-medium">
+                  Título
+                  <input name="title" required className="w-full rounded-xl border border-line px-3 py-2 font-normal" />
+                </label>
+                <label className="block space-y-1 text-sm font-medium">
+                  Descripción
+                  <textarea name="description" rows={4} className="w-full rounded-xl border border-line px-3 py-2 font-normal" />
+                </label>
+                <SubmitButton pendingLabel="Guardando idea…">Guardar idea</SubmitButton>
+              </form>
+            )}
+          </Dialog>
+        )}
+      </div>
 
-      {canEdit && (
-        <form action={createIdeaAction} className="grid gap-3">
-          <input name="title" required placeholder="Título" className="rounded-md border px-3 py-2" />
-          <textarea name="description" placeholder="Descripción" className="rounded-md border px-3 py-2" />
-          <button type="submit" className="w-fit rounded-md bg-zinc-900 px-4 py-2 text-white">Agregar idea</button>
-        </form>
+      {ideas.length === 0 ? (
+        <EmptyState
+          title="Todavía no hay ideas"
+          description="Una idea puede convertirse en proyecto. Empezá por la primera."
+        />
+      ) : (
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {ideas.map((i) => (
+            <li key={i.id}>
+              <Card className="flex h-full flex-col gap-3">
+                <h2 className="font-semibold">{i.title}</h2>
+                {i.description && <p className="line-clamp-3 text-sm text-muted">{i.description}</p>}
+                <p className="mt-auto text-xs text-muted">
+                  {i.createdByEmail} · {i.createdAt.toLocaleDateString("es-AR")}
+                </p>
+              </Card>
+            </li>
+          ))}
+        </ul>
       )}
-
-      <ul className="space-y-3">
-        {ideas.map((i) => (
-          <li key={i.id} className="rounded-md border p-4">
-            <p className="font-medium">{i.title}</p>
-            {i.description && <p className="text-sm text-zinc-600">{i.description}</p>}
-            <p className="mt-1 text-xs text-zinc-500">{i.createdByEmail} · {i.createdAt.toLocaleDateString("es-AR")}</p>
-          </li>
-        ))}
-        {ideas.length === 0 && <li className="text-zinc-500">Todavía no hay ideas.</li>}
-      </ul>
     </section>
   );
 }
 
 export default function IdeasPage() {
   return (
-    <Suspense fallback={<p className="text-sm text-zinc-400">Cargando…</p>}>
+    <Suspense fallback={<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"><CardSkeleton /><CardSkeleton /><CardSkeleton /></div>}>
       <Content />
     </Suspense>
   );

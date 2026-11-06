@@ -147,6 +147,12 @@ function Spotlight({
     [steps, pathname, router, setIndex],
   );
 
+  // Precarga la sección del siguiente paso mientras el usuario lee el actual.
+  useEffect(() => {
+    const next = steps[index + 1];
+    if (next && next.href !== pathname) router.prefetch(next.href);
+  }, [index, steps, pathname, router]);
+
   // Escape cierra; las flechas avanzan y retroceden.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

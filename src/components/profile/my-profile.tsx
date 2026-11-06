@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import { SubmitButton } from "@/components/ui/button";
 import { ServerForm } from "@/components/ui/server-form";
@@ -29,20 +28,20 @@ const input = "w-full rounded-2xl border border-line bg-cream px-4 py-2.5 text-s
 export function MyProfileModal({
   profile,
   action,
-  trigger,
+  open,
+  onClose,
 }: {
   profile: OwnProfile;
   action: (fd: FormData) => Promise<ActionResult>;
-  trigger: (open: () => void) => React.ReactNode;
+  open: boolean;
+  onClose: () => void;
 }) {
-  const [open, setOpen] = useState(false);
   const vis = normalizeVisibility(profile.visibility);
   return (
     <>
-      {trigger(() => setOpen(true))}
-      <Modal open={open} onClose={() => setOpen(false)} title="Mi perfil" description="Editá tus datos. Elegí qué ve el resto de la consultora." size="lg">
+      <Modal open={open} onClose={onClose} title="Mi perfil" description="Editá tus datos. Elegí qué ve el resto de la consultora." size="lg">
         <div className="h-full overflow-y-auto">
-          <ServerForm action={action} onSuccess={() => setOpen(false)} className="space-y-5">
+          <ServerForm action={action} onSuccess={onClose} className="space-y-5">
             <div className="grid gap-4 md:grid-cols-2">
               <label className="space-y-1 text-sm font-medium">
                 Puesto

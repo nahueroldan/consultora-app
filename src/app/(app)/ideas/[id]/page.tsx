@@ -12,7 +12,8 @@ import { VoteButton } from "@/components/ideas/vote-button";
 import { can } from "@/lib/auth/roles";
 import { requireUser } from "@/lib/auth/session";
 import { getIdea, IDEA_STATUSES, IDEA_STATUS_LABEL } from "@/lib/data/ideas";
-import { commentIdeaAction, setIdeaStatusAction, voteIdeaAction } from "@/app/(app)/ideas/actions";
+import { projectFromIdea } from "@/lib/data/projects";
+import { commentIdeaAction, promoteIdeaToProjectAction, setIdeaStatusAction, voteIdeaAction } from "@/app/(app)/ideas/actions";
 
 const input = "w-full rounded-2xl border border-line bg-cream px-4 py-2.5 text-sm font-normal focus-visible:outline-2 focus-visible:outline-accent";
 
@@ -28,6 +29,8 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
 
   const canEditStatus = can(user.role, "idea:editar");
   const canPropose = can(user.role, "propuesta:crear") && idea.status !== "convertida";
+  const project = await projectFromIdea(idea.id);
+  const canPromote = can(user.role, "proyecto:editar") && !project;
 
   return (
     <article className="space-y-6">
@@ -55,6 +58,17 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
           <Link href={`/propuestas?idea=${idea.id}`} className={`${buttonBase} bg-accent text-on-accent hover:bg-accent-hover`}>
             Crear propuesta desde esta idea
           </Link>
+        )}
+        {project && (
+          <Link href={`/proyectos/${project.id}`} className={`${buttonBase} border border-line bg-surface text-ink`}>
+            Ver proyecto: {project.name}
+          </Link>
+        )}
+        {canPromote && (
+          <ServerForm action={promoteIdeaToProjectAction}>
+            <input type="hidden" name="ideaId" value={idea.id} />
+            <SubmitButton variant="secondary" pendingLabel="Creando proyecto…">Convertir en proyecto</SubmitButton>
+          </ServerForm>
         )}
         {idea.linkedProposals.map((p) => (
           <Link key={p.id} href={`/propuestas/${p.id}`} className={`${buttonBase} border border-line bg-surface text-ink`}>

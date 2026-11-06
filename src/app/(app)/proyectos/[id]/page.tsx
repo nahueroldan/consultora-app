@@ -1,5 +1,8 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ExternalLink } from "lucide-react";
+import { Dialog } from "@/components/ui/dialog";
+import { SubmitButton } from "@/components/ui/button";
+import { updateProjectAction } from "@/app/(app)/proyectos/actions";
 import { IconLink } from "@/components/ui/icon-link";
 import { ServerForm } from "@/components/ui/server-form";
 import { notFound } from "next/navigation";
@@ -8,6 +11,7 @@ import { connection } from "next/server";
 import { can } from "@/lib/auth/roles";
 import { requireUser } from "@/lib/auth/session";
 import { getProject, listConfirmedPeople, PROJECT_STATUSES } from "@/lib/data/projects";
+const input = "w-full rounded-2xl border border-line bg-cream px-4 py-2.5 text-sm font-normal focus-visible:outline-2 focus-visible:outline-accent";
 import {
   addMemberAction,
   createSquadAction,
@@ -37,6 +41,40 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
         <p className="text-muted">{project.client ?? "Sin cliente"} · {project.status}</p>
         {project.description && <p className="text-sm">{project.description}</p>}
       </header>
+
+      {project.url && (
+        <a href={project.url} target="_blank" rel="noreferrer" className="inline-flex w-fit items-center gap-2 rounded-2xl border border-line bg-surface px-4 py-2 text-sm hover:border-accent">
+          <ExternalLink size={16} aria-hidden /> Abrir producto
+        </a>
+      )}
+
+      {canEdit && (
+        <Dialog action={updateProjectAction} triggerLabel="Editar proyecto" title="Editar proyecto" description="Cambiá los datos del proyecto.">
+          <label className="block space-y-1 text-sm font-medium">
+            Nombre
+            <input name="name" required defaultValue={project.name} className={input} />
+          </label>
+          <label className="block space-y-1 text-sm font-medium">
+            Cliente
+            <input name="client" defaultValue={project.client ?? ""} className={input} />
+          </label>
+          <label className="block space-y-1 text-sm font-medium">
+            Enlace del producto o sitio
+            <input name="url" type="url" defaultValue={project.url ?? ""} placeholder="https://…" className={input} />
+          </label>
+          <label className="block space-y-1 text-sm font-medium">
+            Descripción
+            <textarea name="description" rows={3} defaultValue={project.description ?? ""} className={input} />
+          </label>
+          <label className="block space-y-1 text-sm font-medium">
+            Estado
+            <select name="status" defaultValue={project.status} className={input}>
+              {PROJECT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+            </select>
+          </label>
+          <SubmitButton pendingLabel="Guardando…" className="w-full">Guardar cambios</SubmitButton>
+        </Dialog>
+      )}
 
       {canEdit && (
         <ServerForm action={setProjectStatusAction} className="flex items-center gap-2">

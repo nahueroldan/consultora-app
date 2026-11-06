@@ -117,7 +117,7 @@ export async function createIdea(input: { title: string; description: string | n
 /** Título y estado de una idea, para precargar una propuesta. */
 export async function getIdeaBasics(id: number) {
   const [row] = await db
-    .select({ id: schema.ideas.id, title: schema.ideas.title, status: schema.ideas.status })
+    .select({ id: schema.ideas.id, title: schema.ideas.title, description: schema.ideas.description, status: schema.ideas.status })
     .from(schema.ideas)
     .where(eq(schema.ideas.id, id))
     .limit(1);

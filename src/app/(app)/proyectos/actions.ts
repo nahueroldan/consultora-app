@@ -5,6 +5,7 @@ import { requirePermission } from "@/lib/auth/session";
 import {
   addSquadMember,
   createProject,
+  updateProject,
   createSquad,
   isPersonConfirmed,
   isProjectStatus,
@@ -13,6 +14,7 @@ import {
   setProjectStatus,
 } from "@/lib/data/projects";
 import { fail, ok, requiredText, safeAction, type ActionResult } from "@/lib/form-result";
+import { cleanOptionalUrl } from "@/lib/url";
 
 function str(fd: FormData, key: string): string {
   return String(fd.get(key) ?? "").trim();
@@ -25,10 +27,13 @@ export async function createProjectAction(fd: FormData): Promise<ActionResult> {
     if ("error" in name) return fail(name.error);
     const status = str(fd, "status") || "propuesta";
     if (!isProjectStatus(status)) return fail("El estado no es válido.");
+    const url = cleanOptionalUrl(str(fd, "url"));
+    if ("error" in url) return fail(url.error);
     await createProject({
       name: name.value,
       client: str(fd, "client") || null,
       description: str(fd, "description") || null,
+      url: url.value,
       status,
       createdByEmail: user.email,
     });
@@ -99,6 +104,31 @@ export async function removeMemberAction(fd: FormData): Promise<ActionResult> {
     await removeSquadMember(squadId, personId);
     const projectId = await projectIdOfSquad(squadId);
     if (projectId) revalidatePath(`/proyectos/${projectId}`);
+    return ok();
+  });
+}
+
+/** Edita los datos de un proyecto. Cualquier persona con permiso de trabajo puede hacerlo. */
+export async function updateProjectAction(fd: FormData): Promise<ActionResult> {
+  return safeAction(async () => {
+    await requirePermission("proyecto:editar");
+    const id = Number(fd.get("projectId"));
+    if (!Number.isInteger(id)) return fail("El proyecto no es válido.");
+    const name = requiredText(fd.get("name"), "El nombre del proyecto");
+    if ("error" in name) return fail(name.error);
+    const status = str(fd, "status");
+    if (!isProjectStatus(status)) return fail("El estado no es válido.");
+    const url = cleanOptionalUrl(str(fd, "url"));
+    if ("error" in url) return fail(url.error);
+    await updateProject(id, {
+      name: name.value,
+      client: str(fd, "client") || null,
+      description: str(fd, "description") || null,
+      url: url.value,
+      status,
+    });
+    revalidatePath(`/proyectos/${id}`);
+    revalidatePath("/proyectos");
     return ok();
   });
 }

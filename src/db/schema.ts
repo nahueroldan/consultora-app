@@ -100,6 +100,10 @@ export const projects = pgTable("projects", {
   name: text("name").notNull(),
   client: text("client"),
   description: text("description"),
+  /** Enlace al producto o sitio del proyecto. */
+  url: text("url"),
+  /** Idea de la que nació el proyecto, si corresponde. */
+  ideaId: integer("idea_id").references(() => ideas.id, { onDelete: "set null" }),
   status: projectStatus("status").notNull().default("propuesta"),
   createdByEmail: text("created_by_email").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),

@@ -2,7 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { requirePermission, requireUser } from "@/lib/auth/session";
-import { addComment, createIdea, isIdeaStatus, setIdeaStatus, toggleVote } from "@/lib/data/ideas";
+import { addComment, createIdea, getIdeaBasics, isIdeaStatus, setIdeaStatus, toggleVote } from "@/lib/data/ideas";
+import { createProject, projectFromIdea } from "@/lib/data/projects";
 import { fail, ok, requiredText, safeAction, type ActionResult } from "@/lib/form-result";
 
 function revalidateIdeas(id?: number) {
@@ -60,6 +61,30 @@ export async function setIdeaStatusAction(fd: FormData): Promise<ActionResult> {
     if (status === "convertida") return fail("Una idea pasa a convertida al crear su propuesta.");
     await setIdeaStatus(id, status);
     revalidateIdeas(id);
+    return ok();
+  });
+}
+
+/** Convierte una idea en proyecto: el proyecto arranca con el título y la descripción de la idea. */
+export async function promoteIdeaToProjectAction(fd: FormData): Promise<ActionResult> {
+  return safeAction(async () => {
+    const user = await requirePermission("proyecto:editar");
+    const id = Number(fd.get("ideaId"));
+    if (!Number.isInteger(id)) return fail("La idea no es válida.");
+    const idea = await getIdeaBasics(id);
+    if (!idea) return fail("La idea no existe.");
+    const existing = await projectFromIdea(id);
+    if (existing) return fail("Esta idea ya tiene un proyecto.");
+    await createProject({
+      name: idea.title,
+      client: null,
+      description: idea.description,
+      status: "propuesta",
+      ideaId: id,
+      createdByEmail: user.email,
+    });
+    revalidatePath("/proyectos");
+    revalidatePath(`/ideas/${id}`);
     return ok();
   });
 }

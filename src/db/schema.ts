@@ -2,6 +2,7 @@ import { ROLES } from "@/lib/auth/roles";
 import {
   boolean,
   integer,
+  jsonb,
   pgEnum,
   pgTable,
   primaryKey,
@@ -18,6 +19,8 @@ export const userRole = pgEnum("user_role", ROLES);
  * confirmed: la persona entró con Google y aceptó aparecer en squads y propuestas.
  */
 export const personStatus = pgEnum("person_status", ["pending", "confirmed"]);
+export const ideaStatus = pgEnum("idea_status", ["abierta", "en_evaluacion", "cerrada", "convertida"]);
+
 
 export const people = pgTable(
   "people",
@@ -122,6 +125,7 @@ export const ideas = pgTable("ideas", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   description: text("description"),
+  status: ideaStatus("status").notNull().default("abierta"),
   createdByEmail: text("created_by_email").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -131,6 +135,8 @@ export const proposals = pgTable("proposals", {
   projectId: integer("project_id")
     .notNull()
     .references(() => projects.id, { onDelete: "cascade" }),
+  /** Idea de origen, si la propuesta nació de una idea. */
+  ideaId: integer("idea_id").references(() => ideas.id, { onDelete: "set null" }),
   title: text("title").notNull(),
   discountPct: integer("discount_pct").notNull().default(0),
   notes: text("notes"),
@@ -146,4 +152,35 @@ export const proposalItems = pgTable("proposal_items", {
   role: text("role").notNull(),
   hours: integer("hours").notNull(),
   hourlyRate: integer("hourly_rate").notNull(),
+});
+
+
+/** Votos de ideas: una persona vota una vez por idea. */
+export const ideaVotes = pgTable(
+  "idea_votes",
+  {
+    ideaId: integer("idea_id")
+      .notNull()
+      .references(() => ideas.id, { onDelete: "cascade" }),
+    userEmail: text("user_email").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.ideaId, t.userEmail] })],
+);
+
+export const ideaComments = pgTable("idea_comments", {
+  id: serial("id").primaryKey(),
+  ideaId: integer("idea_id")
+    .notNull()
+    .references(() => ideas.id, { onDelete: "cascade" }),
+  authorEmail: text("author_email").notNull(),
+  body: text("body").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** Preferencias de widgets del inicio, por usuario. Se guarda la lista completa normalizada. */
+export const userPreferences = pgTable("user_preferences", {
+  userEmail: text("user_email").primaryKey(),
+  widgets: jsonb("widgets").notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });

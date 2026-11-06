@@ -30,7 +30,7 @@ export function MobileNav() {
   return (
     <nav
       aria-label="Principal"
-      className="glass fixed inset-x-3 bottom-3 z-30 grid rounded-3xl border border-line p-1.5 shadow-lg md:hidden"
+      className="fixed inset-x-3 bottom-3 z-30 grid rounded-3xl border border-line bg-surface p-1.5 shadow-lg md:hidden"
       style={{ gridTemplateColumns: `repeat(${MOBILE.length}, minmax(0, 1fr))` }}
     >
       {/* key por ruta: el resalte arranca en la sección actual en cada navegación */}

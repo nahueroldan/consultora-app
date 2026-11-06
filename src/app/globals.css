@@ -18,10 +18,6 @@
   --warning-soft: #fef3c7;
   --danger: #b91c1c;
   --danger-soft: #fee2e2;
-  --surface-rgb: 255 255 255;
-  /* Cristal: el usuario lo ajusta desde el menú (ver glass-control.tsx). */
-  --glass-alpha: 0.92;
-  --glass-blur: 12px;
   color-scheme: light;
 }
 
@@ -42,7 +38,7 @@
   --warning-soft: #422006;
   --danger: #fca5a5;
   --danger-soft: #450a0a;
-  --surface-rgb: 24 24 27;
+
   color-scheme: dark;
 }
 
@@ -63,9 +59,9 @@
   --color-warning-soft: var(--warning-soft);
   --color-danger: var(--danger);
   --color-danger-soft: var(--danger-soft);
-  --font-sans: var(--font-archivo), Arial, Helvetica, sans-serif;
-  --font-display: var(--font-archivo-black), var(--font-archivo), sans-serif;
-  --font-mono: var(--font-space-mono), ui-monospace, monospace;
+  --font-sans: var(--font-dm-sans), Arial, Helvetica, sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-dm-sans), sans-serif;
+  --font-mono: var(--font-space-grotesk), ui-monospace, monospace;
 }
 
 body {
@@ -93,23 +89,4 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-}
-
-/* Fondo con degradados suaves: sin algo detrás, el cristal no se ve. */
-.app-backdrop {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background:
-    radial-gradient(60rem 40rem at 10% -10%, var(--accent-soft), transparent 60%),
-    radial-gradient(50rem 36rem at 110% 20%, color-mix(in srgb, var(--accent-2) 35%, transparent), transparent 60%),
-    radial-gradient(56rem 40rem at 50% 120%, var(--accent-soft), transparent 60%);
-}
-
-/* Superficie translúcida con desenfoque. Lo usan la barra superior y la inferior. */
-.glass {
-  background-color: rgb(var(--surface-rgb) / var(--glass-alpha));
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  backdrop-filter: blur(var(--glass-blur));
 }

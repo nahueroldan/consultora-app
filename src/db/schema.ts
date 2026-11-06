@@ -36,6 +36,10 @@ export const people = pgTable(
     city: text("city"),
     linkedin: text("linkedin"),
     status: personStatus("status").notNull().default("pending"),
+    /** Qué datos ve el resto de las personas. El dueño y el admin ven todo. */
+    visibility: jsonb("visibility")
+      .notNull()
+      .default({ country: true, city: true, position: true, linkedin: true, skills: true }),
     /** Revisar a mano: otra persona con mismo nombre y apellido. */
     needsReview: boolean("needs_review").notNull().default(false),
     importedAt: timestamp("imported_at", { withTimezone: true }).notNull().defaultNow(),
@@ -82,9 +86,11 @@ export const users = pgTable(
     personId: integer("person_id").references(() => people.id, { onDelete: "set null" }),
     /** Se marca al cerrar el recorrido (terminado u omitido): no vuelve a abrirse solo. */
     tourClosedAt: timestamp("tour_closed_at", { withTimezone: true }),
+    /** La persona dijo que no aparece en el directorio: queda para que un admin lo resuelva. */
+    linkRequested: boolean("link_requested").notNull().default(false),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [uniqueIndex("users_email_idx").on(t.email)],
+  (t) => [uniqueIndex("users_email_idx").on(t.email), uniqueIndex("users_person_id_idx").on(t.personId)],
 );
 
 export const projectStatus = pgEnum("project_status", ["propuesta", "activo", "cerrado"]);

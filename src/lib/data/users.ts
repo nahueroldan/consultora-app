@@ -11,6 +11,7 @@ export async function listUsers() {
       name: schema.users.name,
       role: schema.users.role,
       personId: schema.users.personId,
+      linkRequested: schema.users.linkRequested,
       personName: schema.people.firstName,
       personLast: schema.people.lastName,
     })

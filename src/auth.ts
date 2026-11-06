@@ -51,17 +51,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
       if (await findUserByEmail(email)) return true;
 
-      // Alta inicial: el email de ADMIN_EMAIL entra como admin la primera vez.
-      if (email === normalizeEmail(process.env.ADMIN_EMAIL)) {
-        await db.insert(schema.users).values({
-          email,
-          name: user.name ?? null,
-          role: "admin",
-        });
-        return true;
-      }
-
-      return false;
+      // Cualquier cuenta de Google puede entrar. Si no existe, se crea como colaborador;
+      // ADMIN_EMAIL entra como admin. El perfil del directorio se vincula después.
+      const isAdminEmail = email === normalizeEmail(process.env.ADMIN_EMAIL);
+      await db.insert(schema.users).values({
+        email,
+        name: user.name ?? null,
+        role: isAdminEmail ? "admin" : "colaborador",
+      }).onConflictDoNothing();
+      return true;
     },
 
     async jwt({ token }) {

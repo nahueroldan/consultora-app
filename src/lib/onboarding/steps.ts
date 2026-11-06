@@ -73,6 +73,7 @@ export const TOUR_STEPS: TourStep[] = [
     icon: "shield",
     roles: ["lider", "admin"],
     href: "/ideas",
+    target: "ideas-estado",
   },
   {
     id: "usuarios",

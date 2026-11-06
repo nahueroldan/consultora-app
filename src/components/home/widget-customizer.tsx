@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Settings2 } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { Tooltip } from "@/components/ui/tooltip";
-import { SubmitButton, buttonBase } from "@/components/ui/button";
+import { SubmitButton } from "@/components/ui/button";
 import { ServerForm } from "@/components/ui/server-form";
 import { WIDGET_META, MAX_COUNT, MIN_COUNT, type WidgetConfig } from "@/lib/home/widgets";
 import type { ActionResult } from "@/lib/form-result";

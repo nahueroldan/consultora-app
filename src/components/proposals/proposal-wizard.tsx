@@ -116,14 +116,14 @@ export function ProposalWizard({
             {/* Los cuatro pasos quedan montados: cambiar de paso no debe borrar lo cargado. */}
             <div className="space-y-4">
                 <div data-step="0" className={`${hiddenClass(0)} space-y-4`}>
-                  <label className="block space-y-1 text-sm font-medium">
+                  <label className="flex flex-col gap-1.5 text-sm font-medium">
                     Proyecto
                     <select name="projectId" required className={input}>
                       <option value="">Elegí un proyecto</option>
                       {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
                     </select>
                   </label>
-                  <label className="block space-y-1 text-sm font-medium">
+                  <label className="flex flex-col gap-1.5 text-sm font-medium">
                     Título de la propuesta
                     <input
                       name="title"
@@ -149,7 +149,7 @@ export function ProposalWizard({
                 </fieldset>
 
                 <div data-step="2" className={`${hiddenClass(2)} grid gap-4 md:grid-cols-4`}>
-                  <label className="block space-y-1 text-sm font-medium">
+                  <label className="flex flex-col gap-1.5 text-sm font-medium">
                     Descuento %
                     <input
                       name="discountPct"
@@ -161,7 +161,7 @@ export function ProposalWizard({
                       onChange={(e) => setDiscount(Number(e.target.value) || 0)}
                     />
                   </label>
-                  <label className="block space-y-1 text-sm font-medium md:col-span-3">
+                  <label className="flex flex-col gap-1.5 text-sm font-medium md:col-span-3">
                     Notas para el cliente
                     <textarea name="notes" rows={4} className={input} />
                   </label>

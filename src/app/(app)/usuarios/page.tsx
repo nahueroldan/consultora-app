@@ -34,11 +34,11 @@ async function Content() {
         <div data-tour="usuarios">
         <Dialog action={addUserAction} triggerLabel="Dar de alta" title="Dar de alta un usuario" description="La persona entra con su cuenta de Google.">
           
-              <label className="block space-y-1 text-sm font-medium">
+              <label className="flex flex-col gap-1.5 text-sm font-medium">
                 Email
                 <input name="email" type="email" required placeholder="email@ejemplo.com" className={input} />
               </label>
-              <label className="block space-y-1 text-sm font-medium">
+              <label className="flex flex-col gap-1.5 text-sm font-medium">
                 Rol
                 <select name="role" defaultValue="colaborador" className={input}>
                   {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
@@ -74,13 +74,13 @@ async function Content() {
                 </div>
                 <ServerForm action={updateUserAction} className="mt-auto grid gap-2">
                   <input type="hidden" name="id" value={u.id} />
-                  <label className="space-y-1 text-xs font-medium text-muted">
+                  <label className="flex flex-col gap-1.5 text-xs font-medium text-muted">
                     Rol
                     <select name="role" defaultValue={u.role} className={input}>
                       {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
                     </select>
                   </label>
-                  <label className="space-y-1 text-xs font-medium text-muted">
+                  <label className="flex flex-col gap-1.5 text-xs font-medium text-muted">
                     ID de persona
                     <input name="personId" type="number" defaultValue={u.personId ?? ""} placeholder="Ej.: 42" className={input} />
                   </label>

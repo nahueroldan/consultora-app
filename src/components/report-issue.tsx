@@ -36,11 +36,11 @@ export function ReportIssueMenuItem({ action }: { action: (fd: FormData) => Prom
               onSuccess={() => setSent(true)}
               className="space-y-4"
             >
-              <label className="block space-y-1 text-sm font-medium">
+              <label className="flex flex-col gap-1.5 text-sm font-medium">
                 Qué pasó (título corto)
                 <input name="title" required maxLength={120} placeholder="Ej.: no puedo votar una idea" className={input} />
               </label>
-              <label className="block space-y-1 text-sm font-medium">
+              <label className="flex flex-col gap-1.5 text-sm font-medium">
                 Detalle: qué hacías y qué esperabas
                 <textarea name="description" required rows={5} maxLength={4000} className={input} />
               </label>

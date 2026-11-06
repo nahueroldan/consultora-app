@@ -55,23 +55,23 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
 
       {canEdit && (
         <Dialog action={updateProjectAction} triggerLabel="Editar proyecto" title="Editar proyecto" description="Cambiá los datos del proyecto.">
-          <label className="block space-y-1 text-sm font-medium">
+          <label className="flex flex-col gap-1.5 text-sm font-medium">
             Nombre
             <input name="name" required defaultValue={project.name} className={input} />
           </label>
-          <label className="block space-y-1 text-sm font-medium">
+          <label className="flex flex-col gap-1.5 text-sm font-medium">
             Cliente
             <input name="client" defaultValue={project.client ?? ""} className={input} />
           </label>
-          <label className="block space-y-1 text-sm font-medium">
+          <label className="flex flex-col gap-1.5 text-sm font-medium">
             Enlace del producto o sitio
             <input name="url" type="url" defaultValue={project.url ?? ""} placeholder="https://…" className={input} />
           </label>
-          <label className="block space-y-1 text-sm font-medium">
+          <label className="flex flex-col gap-1.5 text-sm font-medium">
             Descripción
             <textarea name="description" rows={3} defaultValue={project.description ?? ""} className={input} />
           </label>
-          <label className="block space-y-1 text-sm font-medium">
+          <label className="flex flex-col gap-1.5 text-sm font-medium">
             Estado
             <select name="status" defaultValue={project.status} className={input}>
               {PROJECT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}

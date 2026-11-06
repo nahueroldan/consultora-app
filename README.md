@@ -10,6 +10,10 @@ Portal interno de la consultora: directorio de colaboradores, armado de squads y
 - Vitest para tests
 - GitHub Actions para CI
 
+## Guía de uso
+
+Paso a paso para usuarios y guía técnica: [docs/guia-uso.md](docs/guia-uso.md).
+
 ## Puesta en marcha
 
 ```bash
@@ -38,6 +42,8 @@ El archivo con datos personales no va al repo: la carpeta `data/` está en `.git
 | `npm run build` | Build de producción |
 | `npm run db:generate` | Genera migración desde el esquema |
 | `npm run db:migrate` | Aplica migraciones |
+| `npm run test:flujo` | Flujo completo contra una base de prueba (`TEST_DATABASE_URL`) |
+| `npm run test:e2e` | Pruebas de navegador con Playwright (solo desarrollo, base de `.env.local`) |
 
 ## Flujo de trabajo
 

@@ -2,10 +2,12 @@
 // El rol se guarda en el token JWT al iniciar sesión.
 import { eq } from "drizzle-orm";
 import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
 import { authConfig } from "@/auth.config";
 import { db, schema } from "@/db";
 import { normalizeEmail } from "@/lib/auth/email";
 import { ROLES, type Role } from "@/lib/auth/roles";
+import { testLoginEnabled } from "@/lib/auth/test-login";
 
 async function findUserByEmail(email: string) {
   const [row] = await db
@@ -16,8 +18,30 @@ async function findUserByEmail(email: string) {
   return row ?? null;
 }
 
+/**
+ * Login de prueba (solo desarrollo, ver test-login.ts). Crea o actualiza el usuario
+ * con el rol pedido, para que las pruebas automáticas tengan la cuenta que necesitan.
+ */
+const testProvider = Credentials({
+  id: "test",
+  name: "Prueba",
+  credentials: { email: {}, role: {} },
+  async authorize(credentials) {
+    if (!testLoginEnabled()) return null;
+    const email = normalizeEmail(String(credentials?.email ?? ""));
+    const role = String(credentials?.role ?? "colaborador");
+    if (!email || !(ROLES as readonly string[]).includes(role)) return null;
+    await db
+      .insert(schema.users)
+      .values({ email, role: role as Role })
+      .onConflictDoUpdate({ target: schema.users.email, set: { role: role as Role } });
+    return { id: email, email, name: email };
+  },
+});
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
+  providers: testLoginEnabled() ? [...authConfig.providers, testProvider] : authConfig.providers,
   callbacks: {
     ...authConfig.callbacks,
 

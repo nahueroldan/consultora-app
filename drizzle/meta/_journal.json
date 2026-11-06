@@ -15,6 +15,13 @@
       "when": 1793934326053,
       "tag": "0001_handy_princess_powerful",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793936426771,
+      "tag": "0002_lovely_longshot",
+      "breakpoints": true
     }
   ]
 }

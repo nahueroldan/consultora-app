@@ -81,3 +81,69 @@ export const users = pgTable(
   },
   (t) => [uniqueIndex("users_email_idx").on(t.email)],
 );
+
+export const projectStatus = pgEnum("project_status", ["propuesta", "activo", "cerrado"]);
+
+export const projects = pgTable("projects", {
+  id: serial("id").primaryKey(),
+  name: text("name").notNull(),
+  client: text("client"),
+  description: text("description"),
+  status: projectStatus("status").notNull().default("propuesta"),
+  createdByEmail: text("created_by_email").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const squads = pgTable("squads", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id")
+    .notNull()
+    .references(() => projects.id, { onDelete: "cascade" }),
+  name: text("name").notNull(),
+});
+
+/** Solo personas confirmadas deberían entrar a un squad (se valida en la acción). */
+export const squadMembers = pgTable(
+  "squad_members",
+  {
+    squadId: integer("squad_id")
+      .notNull()
+      .references(() => squads.id, { onDelete: "cascade" }),
+    personId: integer("person_id")
+      .notNull()
+      .references(() => people.id, { onDelete: "cascade" }),
+    roleInSquad: text("role_in_squad"),
+    allocationPct: integer("allocation_pct").notNull().default(100),
+  },
+  (t) => [primaryKey({ columns: [t.squadId, t.personId] })],
+);
+
+export const ideas = pgTable("ideas", {
+  id: serial("id").primaryKey(),
+  title: text("title").notNull(),
+  description: text("description"),
+  createdByEmail: text("created_by_email").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const proposals = pgTable("proposals", {
+  id: serial("id").primaryKey(),
+  projectId: integer("project_id")
+    .notNull()
+    .references(() => projects.id, { onDelete: "cascade" }),
+  title: text("title").notNull(),
+  discountPct: integer("discount_pct").notNull().default(0),
+  notes: text("notes"),
+  createdByEmail: text("created_by_email").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const proposalItems = pgTable("proposal_items", {
+  id: serial("id").primaryKey(),
+  proposalId: integer("proposal_id")
+    .notNull()
+    .references(() => proposals.id, { onDelete: "cascade" }),
+  role: text("role").notNull(),
+  hours: integer("hours").notNull(),
+  hourlyRate: integer("hourly_rate").notNull(),
+});

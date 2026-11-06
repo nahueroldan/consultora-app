@@ -65,6 +65,11 @@ async function Content() {
                       <Mail size={12} aria-hidden className="mr-1 inline" />
                       {u.personName ? `${u.personName} ${u.personLast}` : "sin persona vinculada"}
                     </p>
+                    {u.linkRequested && (
+                      <span className="mt-1 inline-block rounded-full bg-warning-soft px-2 py-0.5 font-mono text-[11px] text-warning">
+                        pide vincular su perfil
+                      </span>
+                    )}
                   </div>
                 </div>
                 <ServerForm action={updateUserAction} className="mt-auto grid gap-2">

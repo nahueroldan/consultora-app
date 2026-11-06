@@ -2,11 +2,16 @@ import { describe, expect, it } from "vitest";
 import { ForbiddenError, assertCan, can } from "@/lib/auth/roles";
 
 describe("can", () => {
-  it("colaborador solo puede ver el directorio", () => {
+  it("colaborador puede trabajar igual que un líder", () => {
     expect(can("colaborador", "directorio:ver")).toBe(true);
-    expect(can("colaborador", "squad:editar")).toBe(false);
-    expect(can("colaborador", "proyecto:editar")).toBe(false);
-    expect(can("colaborador", "idea:editar")).toBe(false);
+    expect(can("colaborador", "squad:editar")).toBe(true);
+    expect(can("colaborador", "proyecto:editar")).toBe(true);
+    expect(can("colaborador", "idea:editar")).toBe(true);
+    expect(can("colaborador", "propuesta:crear")).toBe(true);
+  });
+
+  it("colaborador no gestiona usuarios", () => {
+    expect(can("colaborador", "usuario:gestionar")).toBe(false);
   });
 
   it("líder puede editar squads, proyectos e ideas, pero no gestionar usuarios", () => {
@@ -34,6 +39,6 @@ describe("assertCan", () => {
     expect(() => assertCan("lider", "squad:editar")).not.toThrow();
   });
   it("lanza ForbiddenError si no tiene permiso", () => {
-    expect(() => assertCan("colaborador", "squad:editar")).toThrow(ForbiddenError);
+    expect(() => assertCan("colaborador", "usuario:gestionar")).toThrow(ForbiddenError);
   });
 });

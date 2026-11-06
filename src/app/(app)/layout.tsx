@@ -4,17 +4,25 @@ import { AppShell } from "@/components/app-shell";
 import { can } from "@/lib/auth/roles";
 import { requireUser } from "@/lib/auth/session";
 import { getTourClosed } from "@/lib/data/users";
+import { findCandidates, getUserLinkState } from "@/lib/data/profile";
+import { cookies } from "next/headers";
+import { DISMISS_COOKIE } from "@/lib/profile/gate-cookie";
 
 async function Shell({ children }: { children: React.ReactNode }) {
   await connection();
   const user = await requireUser();
   const tourClosed = await getTourClosed(user.email);
+  const link = await getUserLinkState(user.email);
+  const dismissed = (await cookies()).get(DISMISS_COOKIE)?.value === "1";
+  const needsLink = !link?.personId && !link?.linkRequested && !dismissed;
+  const linkCandidates = needsLink ? await findCandidates(link?.name ?? user.name ?? user.email) : null;
   return (
     <AppShell
       email={user.email}
       role={user.role}
       isAdmin={can(user.role, "usuario:gestionar")}
       tourClosed={tourClosed}
+      linkCandidates={linkCandidates}
     >
       {children}
     </AppShell>

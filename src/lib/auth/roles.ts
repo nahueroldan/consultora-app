@@ -15,17 +15,22 @@ export const ACTIONS = [
   "propuesta:crear",
   "usuario:gestionar",
 ] as const;
+// Todas las acciones de trabajo son para cualquier persona. Solo "usuario:gestionar"
+// (altas, roles y vínculos de cuentas) queda para admin. Editar el perfil de otro
+// nunca es una acción de rol: se valida por dueño (ver src/lib/auth/profile.ts).
 export type Action = (typeof ACTIONS)[number];
 
+const WORK_ACTIONS: readonly Action[] = [
+  "directorio:ver",
+  "squad:editar",
+  "proyecto:editar",
+  "idea:editar",
+  "propuesta:crear",
+];
+
 const PERMISSIONS: Record<Role, readonly Action[]> = {
-  colaborador: ["directorio:ver"],
-  lider: [
-    "directorio:ver",
-    "squad:editar",
-    "proyecto:editar",
-    "idea:editar",
-    "propuesta:crear",
-  ],
+  colaborador: WORK_ACTIONS,
+  lider: WORK_ACTIONS,
   admin: [...ACTIONS],
 };
 

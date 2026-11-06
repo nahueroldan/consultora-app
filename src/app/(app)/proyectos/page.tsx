@@ -1,12 +1,13 @@
 import { Suspense } from "react";
 import { connection } from "next/server";
-import { FolderKanban, Users } from "lucide-react";
-import { Badge, LinkCard } from "@/components/ui/card";
+
+
 import { Dialog } from "@/components/ui/dialog";
 import { SubmitButton } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { TicketList, TicketRow } from "@/components/ui/ticket-row";
 import { CardSkeleton } from "@/components/ui/skeleton";
-import { FadeIn } from "@/components/motion";
+
 import { can } from "@/lib/auth/roles";
 import { requireUser } from "@/lib/auth/session";
 import { listProjects, PROJECT_STATUSES } from "@/lib/data/projects";
@@ -14,7 +15,7 @@ import { createProjectAction } from "@/app/(app)/proyectos/actions";
 import { fieldClass as input } from "@/components/ui/field";
 
 
-const TONE = { propuesta: "warning", activo: "success", cerrado: "neutral" } as const;
+const PROJECT_TONE = { propuesta: "warning", activo: "success", cerrado: "neutral" } as const;
 
 async function Content() {
   await connection();
@@ -65,29 +66,18 @@ async function Content() {
       {projects.length === 0 ? (
         <EmptyState title="Todavía no hay proyectos" description="Creá el primero para armar squads y propuestas." />
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((p, i) => (
-            <li key={p.id}>
-              <FadeIn delay={Math.min(i * 0.04, 0.3)}>
-                <LinkCard href={`/proyectos/${p.id}`} className="flex h-full flex-col gap-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="flex size-11 items-center justify-center rounded-2xl bg-accent-soft text-accent">
-                      <FolderKanban size={20} aria-hidden />
-                    </span>
-                    <Badge tone={TONE[p.status]}>{p.status}</Badge>
-                  </div>
-                  <div className="min-w-0">
-                    <h2 className="truncate font-semibold">{p.name}</h2>
-                    <p className="truncate text-sm text-muted">{p.client ?? "Sin cliente"}</p>
-                  </div>
-                  <p className="mt-auto flex items-center gap-1.5 font-mono text-xs text-muted">
-                    <Users size={14} aria-hidden /> {p.squads} squad{p.squads === 1 ? "" : "s"}
-                  </p>
-                </LinkCard>
-              </FadeIn>
-            </li>
+        <TicketList>
+          {projects.map((p) => (
+            <TicketRow
+              key={p.id}
+              href={`/proyectos/${p.id}`}
+              initial={p.name.charAt(0)}
+              title={p.name}
+              meta={[p.client ?? "Sin cliente", `${p.squads} squad${p.squads === 1 ? "" : "s"}`]}
+              status={{ label: p.status, tone: PROJECT_TONE[p.status] }}
+            />
           ))}
-        </ul>
+        </TicketList>
       )}
     </section>
   );

@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { connection } from "next/server";
-import { Card } from "@/components/ui/card";
+import { TicketList, TicketRow } from "@/components/ui/ticket-row";
+import { FieldLabel, fieldClass } from "@/components/ui/field";
+import { timeAgo } from "@/lib/time-ago";
 import { SubmitButton } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/ui/empty-state";
 import { CardSkeleton } from "@/components/ui/skeleton";
-import { IdeaStatusBadge } from "@/components/ideas/status-badge";
 import { VoteButton } from "@/components/ideas/vote-button";
 import { can } from "@/lib/auth/roles";
 import { requireUser } from "@/lib/auth/session";
@@ -14,6 +15,8 @@ import { IDEA_STATUSES, IDEA_STATUS_LABEL, isIdeaStatus, listIdeas, countIdeasBy
 import { createIdeaAction, voteIdeaAction } from "@/app/(app)/ideas/actions";
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+
+const IDEA_TONE = { abierta: "accent", en_evaluacion: "warning", cerrada: "neutral", convertida: "success" } as const;
 
 async function Content({ searchParams }: { searchParams: SearchParams }) {
   await connection();
@@ -39,14 +42,12 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
         </div>
         {can(user.role, "idea:editar") && (
           <Dialog action={createIdeaAction} triggerLabel="Nueva idea" title="Nueva idea" description="Contala en pocas palabras. Podés ampliarla después.">
-            <label className="block space-y-1 text-sm font-medium">
-              Título
-              <input name="title" required maxLength={120} className="w-full rounded-2xl border border-line bg-cream px-4 py-2.5 font-normal" />
-            </label>
-            <label className="block space-y-1 text-sm font-medium">
-              Descripción
-              <textarea name="description" rows={4} className="w-full rounded-2xl border border-line bg-cream px-4 py-2.5 font-normal" />
-            </label>
+            <FieldLabel label="Título">
+              <input name="title" required maxLength={120} className={fieldClass} />
+            </FieldLabel>
+            <FieldLabel label="Descripción">
+              <textarea name="description" rows={4} className={fieldClass} />
+            </FieldLabel>
             <SubmitButton pendingLabel="Guardando idea…" className="w-full">Guardar idea</SubmitButton>
           </Dialog>
         )}
@@ -62,25 +63,22 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
       {ideas.length === 0 ? (
         <EmptyState title="No hay ideas en este estado" description="Cambiá el filtro o agregá una idea nueva." />
       ) : (
-        <ul data-tour="ideas" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {ideas.map((i) => (
-            <li key={i.id} className="flex">
-              <Card className="flex w-full flex-col gap-3">
-                <div className="flex items-start justify-between gap-2">
-                  <IdeaStatusBadge status={i.status} />
-                  <VoteButton ideaId={i.id} votes={i.votes} voted={i.votedByMe} action={voteIdeaAction} size="sm" />
-                </div>
-                <Link href={`/ideas/${i.id}`} className="font-semibold hover:text-accent">
-                  {i.title}
-                </Link>
-                {i.description && <p className="line-clamp-3 text-sm text-muted">{i.description}</p>}
-                <p className="mt-auto font-mono text-xs text-muted">
-                  {i.comments} comentario{i.comments === 1 ? "" : "s"} · {i.createdByEmail}
-                </p>
-              </Card>
-            </li>
-          ))}
-        </ul>
+        <div data-tour="ideas">
+          <TicketList>
+            {ideas.map((i) => (
+              <TicketRow
+                key={i.id}
+                href={`/ideas/${i.id}`}
+                initial={i.createdByEmail.charAt(0)}
+                title={i.title}
+                id={i.id}
+                meta={[i.createdByEmail, `${i.comments} comentario${i.comments === 1 ? "" : "s"}`, timeAgo(i.createdAt)]}
+                status={{ label: IDEA_STATUS_LABEL[i.status], tone: IDEA_TONE[i.status] }}
+                action={<VoteButton ideaId={i.id} votes={i.votes} voted={i.votedByMe} action={voteIdeaAction} size="sm" />}
+              />
+            ))}
+          </TicketList>
+        </div>
       )}
     </section>
   );

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Settings2 } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
+import { Tooltip } from "@/components/ui/tooltip";
 import { SubmitButton, buttonBase } from "@/components/ui/button";
 import { ServerForm } from "@/components/ui/server-form";
 import { WIDGET_META, MAX_COUNT, MIN_COUNT, type WidgetConfig } from "@/lib/home/widgets";
@@ -22,9 +23,17 @@ export function WidgetCustomizer({
   const [open, setOpen] = useState(false);
   return (
     <>
-      <button type="button" data-tour="personalizar" onClick={() => setOpen(true)} className={`${buttonBase} border border-line bg-surface text-ink`}>
-        <Settings2 size={16} aria-hidden /> Personalizar inicio
-      </button>
+      <Tooltip label="Personalizar inicio">
+        <button
+          type="button"
+          data-tour="personalizar"
+          aria-label="Personalizar inicio"
+          onClick={() => setOpen(true)}
+          className="inline-flex size-10 items-center justify-center rounded-2xl border border-line bg-surface text-ink transition hover:border-accent hover:text-accent focus-visible:outline-2 focus-visible:outline-accent"
+        >
+          <Settings2 size={18} aria-hidden />
+        </button>
+      </Tooltip>
       <Modal open={open} onClose={() => setOpen(false)} title="Personalizar inicio" description="Elegí qué ver en tu inicio. Se guarda para tu usuario." size="lg">
         <div className="h-full overflow-y-auto">
           <ServerForm action={action} onSuccess={() => setOpen(false)} className="space-y-3">

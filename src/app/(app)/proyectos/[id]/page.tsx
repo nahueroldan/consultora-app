@@ -1,6 +1,6 @@
 import { cardSurface } from "@/components/ui/card";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink, UserMinus } from "lucide-react";
+import { ArrowLeft, Check, ExternalLink, Pencil, UserMinus, X } from "lucide-react";
 import { Tooltip } from "@/components/ui/tooltip";
 import { Dialog } from "@/components/ui/dialog";
 import { SubmitButton } from "@/components/ui/button";
@@ -55,7 +55,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
       )}
 
       {canEdit && (
-        <Dialog action={updateProjectAction} triggerLabel="Editar proyecto" title="Editar proyecto" description="Cambiá los datos del proyecto.">
+        <Dialog action={updateProjectAction} triggerLabel="Editar proyecto" triggerIcon={Pencil} title="Editar proyecto" description="Cambiá los datos del proyecto.">
           <label className="flex flex-col gap-1.5 text-sm font-medium">
             Nombre
             <input name="name" required defaultValue={project.name} className={input} />
@@ -129,13 +129,13 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
                         <input type="hidden" name="projectId" value={project.id} />
                         <input type="hidden" name="userEmail" value={i.userEmail} />
                         <input type="hidden" name="decision" value="aceptada" />
-                        <SubmitButton variant="secondary" pendingLabel="…" className="min-h-9">Aceptar</SubmitButton>
+                        <Tooltip label="Aceptar"><SubmitButton variant="secondary" pendingLabel="…" className="size-10 px-0" aria-label="Aceptar"><Check size={16} aria-hidden /></SubmitButton></Tooltip>
                       </ServerForm>
                       <ServerForm action={decideInterestAction}>
                         <input type="hidden" name="projectId" value={project.id} />
                         <input type="hidden" name="userEmail" value={i.userEmail} />
                         <input type="hidden" name="decision" value="rechazada" />
-                        <SubmitButton variant="secondary" pendingLabel="…" className="min-h-9">Rechazar</SubmitButton>
+                        <Tooltip label="Rechazar"><SubmitButton variant="secondary" pendingLabel="…" className="size-10 px-0" aria-label="Rechazar"><X size={16} aria-hidden /></SubmitButton></Tooltip>
                       </ServerForm>
                     </div>
                   )}

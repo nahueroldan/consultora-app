@@ -38,13 +38,14 @@ export function Badge({
   tone?: "neutral" | "success" | "warning" | "accent";
 }) {
   const tones = {
-    neutral: "bg-cream text-muted",
-    success: "bg-success-soft text-success",
-    warning: "bg-warning-soft text-warning",
-    accent: "bg-accent-soft text-accent",
+    neutral: "text-muted",
+    success: "text-success",
+    warning: "text-warning",
+    accent: "text-accent",
   };
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 font-mono text-xs ${tones[tone]}`}>
+    <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${tones[tone]}`}>
+      <span aria-hidden className="size-1.5 rounded-full bg-current" />
       {children}
     </span>
   );

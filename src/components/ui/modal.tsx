@@ -39,10 +39,12 @@ export function Modal({
       ref={ref}
       onClose={onClose}
       aria-labelledby={titleId}
-      className={`m-auto h-full max-h-none w-full max-w-none overflow-hidden rounded-none bg-surface p-0 text-ink shadow-2xl backdrop:bg-ink/40 backdrop:backdrop-blur-sm md:h-auto md:max-h-[88vh] md:rounded-3xl ${width}`}
+      className={`m-0 mt-auto h-[88vh] w-full max-w-none overflow-hidden rounded-t-3xl border border-line bg-surface p-0 text-ink shadow-2xl backdrop:bg-ink/40 md:inset-auto md:left-1/2 md:top-1/2 md:m-0 md:h-auto md:max-h-[88vh] md:-translate-x-1/2 md:-translate-y-1/2 md:rounded-3xl ${width}`}
     >
       {open && (
-        <div className="flex h-full max-h-[inherit] flex-col">
+        <div className="flex h-full flex-col">
+          {/* Tirador visible solo en móvil: indica que es una hoja. */}
+          <div aria-hidden className="mx-auto mt-2 h-1 w-10 rounded-full bg-line md:hidden" />
           <div className="flex items-start justify-between gap-4 border-b border-line p-5">
             <div className="min-w-0">
               <h2 id={titleId} className="font-display text-xl">{title}</h2>

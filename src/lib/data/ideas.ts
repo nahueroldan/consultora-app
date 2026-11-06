@@ -123,3 +123,22 @@ export async function getIdeaBasics(id: number) {
     .limit(1);
   return row ?? null;
 }
+
+/** Top de ideas por votos, con fuente configurable: todas, mías o cerradas. */
+export async function listTopIdeas(opts: { userEmail: string; source: "todas" | "mias" | "cerradas"; limit: number }) {
+  const conditions = [];
+  if (opts.source === "mias") conditions.push(eq(schema.ideas.createdByEmail, opts.userEmail));
+  if (opts.source === "cerradas") conditions.push(eq(schema.ideas.status, "cerrada"));
+  return db
+    .select({
+      id: schema.ideas.id,
+      title: schema.ideas.title,
+      status: schema.ideas.status,
+      votes: sql<number>`(select count(*)::int from ${schema.ideaVotes} v where v.idea_id = ${schema.ideas.id})`,
+      votedByMe: sql<boolean>`exists(select 1 from ${schema.ideaVotes} v where v.idea_id = ${schema.ideas.id} and v.user_email = ${opts.userEmail})`,
+    })
+    .from(schema.ideas)
+    .where(conditions.length ? and(...conditions) : undefined)
+    .orderBy(desc(sql`(select count(*) from ${schema.ideaVotes} v where v.idea_id = ${schema.ideas.id})`), desc(schema.ideas.createdAt))
+    .limit(opts.limit);
+}

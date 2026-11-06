@@ -7,14 +7,15 @@ import { PendingContext } from "@/components/ui/server-form";
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-accent text-on-accent hover:bg-accent-hover",
+  primary: "bg-accent text-on-accent shadow-sm shadow-accent/20 hover:bg-accent-hover hover:shadow-md",
   secondary: "border border-line bg-surface text-ink hover:bg-accent-soft",
   ghost: "text-muted hover:bg-accent-soft hover:text-ink",
   danger: "bg-danger-soft text-danger hover:bg-danger hover:text-white",
 };
 
+/** Base de todos los botones: altura cómoda, radio grande y respuesta al tocar (escala suave). */
 export const buttonBase =
-  "inline-flex min-h-10 items-center justify-center gap-2 rounded-2xl px-4 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60";
+  "inline-flex min-h-10 items-center justify-center gap-2 rounded-2xl px-4 text-sm font-medium transition duration-200 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100";
 
 /**
  * Botón de envío de formularios. Muestra su propio estado de carga mientras

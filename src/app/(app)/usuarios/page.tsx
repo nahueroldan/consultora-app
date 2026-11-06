@@ -1,74 +1,96 @@
 import { Suspense } from "react";
 import { connection } from "next/server";
+import { Mail, UserRound } from "lucide-react";
+import { Card } from "@/components/ui/card";
+import { Dialog } from "@/components/ui/dialog";
+import { SubmitButton } from "@/components/ui/button";
+import { CardSkeleton } from "@/components/ui/skeleton";
+import { FadeIn } from "@/components/motion";
 import { can, ROLES } from "@/lib/auth/roles";
 import { requireUser } from "@/lib/auth/session";
 import { listUsers } from "@/lib/data/users";
 import { addUserAction, updateUserAction } from "@/app/(app)/usuarios/actions";
 
+const input = "w-full rounded-2xl border border-line bg-cream px-4 py-2.5 text-sm font-normal focus-visible:outline-2 focus-visible:outline-accent";
+
 async function Content() {
   await connection();
   const user = await requireUser();
   if (!can(user.role, "usuario:gestionar")) {
-    return <p className="text-zinc-600">No tenés permiso para ver esta página.</p>;
+    return <p className="text-muted">No tenés permiso para ver esta página.</p>;
   }
   const users = await listUsers();
 
   return (
-    <section className="space-y-8">
-      <h1 className="text-2xl font-semibold">Usuarios</h1>
+    <section className="space-y-6">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="font-display text-3xl tracking-tight">Usuarios</h1>
+          <p className="text-sm text-muted">Cuentas con acceso, sus roles y la persona vinculada.</p>
+        </div>
+        <Dialog triggerLabel="Dar de alta" title="Dar de alta un usuario" description="La persona entra con su cuenta de Google.">
+          {() => (
+            <form action={addUserAction} className="space-y-4">
+              <label className="block space-y-1 text-sm font-medium">
+                Email
+                <input name="email" type="email" required placeholder="email@ejemplo.com" className={input} />
+              </label>
+              <label className="block space-y-1 text-sm font-medium">
+                Rol
+                <select name="role" defaultValue="colaborador" className={input}>
+                  {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
+                </select>
+              </label>
+              <SubmitButton pendingLabel="Guardando…" className="w-full">Dar de alta</SubmitButton>
+            </form>
+          )}
+        </Dialog>
+      </div>
 
-      <form action={addUserAction} className="grid gap-3 md:grid-cols-4">
-        <input name="email" type="email" required placeholder="email@ejemplo.com" className="rounded-md border px-3 py-2 md:col-span-2" />
-        <select name="role" defaultValue="colaborador" className="rounded-md border px-3 py-2">
-          {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
-        </select>
-        <button type="submit" className="rounded-md bg-zinc-900 px-4 py-2 text-white">Dar de alta</button>
-      </form>
-
-      <table className="w-full text-left text-sm">
-        <thead className="border-b text-zinc-500">
-          <tr>
-            <th className="py-2">Email</th>
-            <th>Rol</th>
-            <th>Persona vinculada (ID)</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((u) => (
-            <tr key={u.id} className="border-b">
-              <td className="py-2">{u.email}</td>
-              <td colSpan={3}>
-                <form action={updateUserAction} className="flex items-center gap-2 py-1">
-                  <input type="hidden" name="id" value={u.id} />
-                  <select name="role" defaultValue={u.role} className="rounded-md border px-2 py-1">
-                    {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
-                  </select>
-                  <input
-                    name="personId"
-                    type="number"
-                    defaultValue={u.personId ?? ""}
-                    placeholder="ID de persona"
-                    className="w-40 rounded-md border px-2 py-1"
-                  />
-                  <span className="text-xs text-zinc-500">
-                    {u.personName ? `${u.personName} ${u.personLast}` : "sin vincular"}
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {users.map((u, i) => (
+          <li key={u.id}>
+            <FadeIn delay={Math.min(i * 0.04, 0.3)}>
+              <Card className="flex h-full flex-col gap-4">
+                <div className="flex items-center gap-3">
+                  <span className="flex size-11 items-center justify-center rounded-2xl bg-accent-soft text-accent">
+                    <UserRound size={20} aria-hidden />
                   </span>
-                  <button type="submit" className="ml-auto rounded-md border px-2 py-1">Guardar</button>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold">{u.email}</p>
+                    <p className="truncate text-xs text-muted">
+                      <Mail size={12} aria-hidden className="mr-1 inline" />
+                      {u.personName ? `${u.personName} ${u.personLast}` : "sin persona vinculada"}
+                    </p>
+                  </div>
+                </div>
+                <form action={updateUserAction} className="mt-auto grid gap-2">
+                  <input type="hidden" name="id" value={u.id} />
+                  <label className="space-y-1 text-xs font-medium text-muted">
+                    Rol
+                    <select name="role" defaultValue={u.role} className={input}>
+                      {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
+                    </select>
+                  </label>
+                  <label className="space-y-1 text-xs font-medium text-muted">
+                    ID de persona
+                    <input name="personId" type="number" defaultValue={u.personId ?? ""} placeholder="Ej.: 42" className={input} />
+                  </label>
+                  <SubmitButton variant="secondary" pendingLabel="Guardando…">Guardar</SubmitButton>
                 </form>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              </Card>
+            </FadeIn>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }
 
 export default function UsuariosPage() {
   return (
-    <Suspense fallback={<p className="text-sm text-zinc-400">Cargando…</p>}>
-      <Content  />
+    <Suspense fallback={<div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"><CardSkeleton /><CardSkeleton /><CardSkeleton /></div>}>
+      <Content />
     </Suspense>
   );
 }

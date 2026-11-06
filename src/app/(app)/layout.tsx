@@ -18,6 +18,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
           <Link href="/directorio" className="hover:underline">Directorio</Link>
           <Link href="/proyectos" className="hover:underline">Proyectos</Link>
           <Link href="/ideas" className="hover:underline">Ideas</Link>
+          <Link href="/propuestas" className="hover:underline">Propuestas</Link>
           {isAdmin && <Link href="/usuarios" className="hover:underline">Usuarios</Link>}
           <div className="ml-auto flex items-center gap-3">
             <span className="text-zinc-500">

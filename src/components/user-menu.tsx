@@ -6,7 +6,6 @@ import { CircleHelp, LogOut, Settings, UserRound, Users } from "lucide-react";
 import { useTour } from "@/components/onboarding/tour";
 import { MyProfileModal } from "@/components/profile/my-profile";
 import { ReportIssueMenuItem } from "@/components/report-issue";
-import { GlassControl } from "@/components/glass-control";
 import { reportIssueAction } from "@/app/(app)/reportar-actions";
 import type { ActionResult } from "@/lib/form-result";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -87,7 +86,6 @@ export function UserMenu({
           </div>
 
           <ThemeToggle />
-          <GlassControl />
 
           <div className="space-y-1">
             {ownProfile && (

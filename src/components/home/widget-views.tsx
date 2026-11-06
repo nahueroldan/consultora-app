@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpRight, FileText, FolderKanban, Lightbulb, Users } from "lucide-react";
+import { ArrowUpRight, FileText, FolderKanban, Lightbulb, Plus, Users } from "lucide-react";
 import { IconLink } from "@/components/ui/icon-link";
 import { VoteButton } from "@/components/ideas/vote-button";
 import { IdeaStatusBadge } from "@/components/ideas/status-badge";
@@ -81,7 +81,10 @@ export async function ProposalsWidget({ widget }: Props) {
   return (
     <WidgetCard id="propuestas-recientes" title="Propuestas recientes" action={<IconLink href="/propuestas" label="Ver todas las propuestas" Icon={ArrowUpRight} />}>
       {proposals.length === 0 ? (
-        <EmptyState title="Todavía no hay propuestas" actionHref="/propuestas" actionLabel="Crear propuesta" />
+        <div className="flex flex-col items-center gap-3 py-4 text-center">
+          <p className="text-sm text-muted">Todavía no hay propuestas.</p>
+          <IconLink href="/propuestas" label="Crear propuesta" Icon={Plus} />
+        </div>
       ) : (
         <ul className="divide-y divide-line">
           {proposals.map((p) => (

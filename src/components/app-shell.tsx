@@ -37,6 +37,7 @@ export function AppShell({
   return (
     <TourProvider steps={steps} autoOpen={tourAutoOpen} closeAction={closeTourAction}>
     <div className="flex min-h-screen flex-col">
+      <div aria-hidden className="app-backdrop" />
       {/* Barra superior: la marca lleva al inicio; a la derecha, configuración. */}
       <header className="glass sticky top-0 z-20 border-b border-line">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-4 py-3 md:px-8">

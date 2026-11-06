@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { Layers } from "lucide-react";
 
 const KEY = "glass-level";
 
@@ -17,23 +18,20 @@ export function GlassControl() {
 
   // Lee lo guardado después del render (el servidor no conoce el navegador).
   useEffect(() => {
-    const level = Number(localStorage.getItem(KEY) ?? 35);
+    const level = Number(localStorage.getItem(KEY) ?? 50);
     if (ref.current) ref.current.value = String(level);
     apply(level);
   }, []);
 
   return (
-    <label className="flex flex-col gap-2 rounded-2xl bg-cream px-4 py-3 text-sm">
-      <span className="flex items-center justify-between">
-        Cristal
-        <span className="font-mono text-xs text-muted">transparencia y desenfoque</span>
-      </span>
+    <div className="flex items-center gap-3 rounded-2xl bg-cream px-3 py-2.5 text-muted">
+      <Layers size={16} aria-hidden />
       <input
         ref={ref}
         type="range"
         min={0}
         max={100}
-        defaultValue={35}
+        defaultValue={50}
         aria-label="Intensidad del cristal"
         className="w-full accent-accent"
         onChange={(e) => {
@@ -42,6 +40,6 @@ export function GlassControl() {
           apply(level);
         }}
       />
-    </label>
+    </div>
   );
 }

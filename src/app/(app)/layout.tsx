@@ -16,6 +16,8 @@ async function Shell({ children }: { children: React.ReactNode }) {
         <nav className="mx-auto flex max-w-5xl items-center gap-4 p-4 text-sm">
           <span className="font-semibold">Consultora</span>
           <Link href="/directorio" className="hover:underline">Directorio</Link>
+          <Link href="/proyectos" className="hover:underline">Proyectos</Link>
+          <Link href="/ideas" className="hover:underline">Ideas</Link>
           {isAdmin && <Link href="/usuarios" className="hover:underline">Usuarios</Link>}
           <div className="ml-auto flex items-center gap-3">
             <span className="text-zinc-500">

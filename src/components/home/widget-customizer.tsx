@@ -22,7 +22,7 @@ export function WidgetCustomizer({
   const [open, setOpen] = useState(false);
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className={`${buttonBase} border border-line bg-surface text-ink`}>
+      <button type="button" data-tour="personalizar" onClick={() => setOpen(true)} className={`${buttonBase} border border-line bg-surface text-ink`}>
         <Settings2 size={16} aria-hidden /> Personalizar inicio
       </button>
       <Modal open={open} onClose={() => setOpen(false)} title="Personalizar inicio" description="Elegí qué ver en tu inicio. Se guarda para tu usuario." size="lg">

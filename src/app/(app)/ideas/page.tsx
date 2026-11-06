@@ -62,7 +62,7 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
       {ideas.length === 0 ? (
         <EmptyState title="No hay ideas en este estado" description="Cambiá el filtro o agregá una idea nueva." />
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul data-tour="ideas" className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {ideas.map((i) => (
             <li key={i.id} className="flex">
               <Card className="flex w-full flex-col gap-3">

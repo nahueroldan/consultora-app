@@ -48,6 +48,7 @@ export function UserMenu({
         type="button"
         aria-haspopup="menu"
         aria-expanded={open}
+        data-tour="configuracion"
         aria-label="Configuración"
         onClick={() => setOpen((v) => !v)}
         className="flex size-10 items-center justify-center rounded-2xl border border-line bg-surface font-display text-accent transition hover:border-accent focus-visible:outline-2 focus-visible:outline-accent"

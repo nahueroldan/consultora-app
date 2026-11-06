@@ -29,6 +29,7 @@ async function Content() {
           <h1 className="font-display text-3xl tracking-tight">Usuarios</h1>
           <p className="text-sm text-muted">Cuentas con acceso, sus roles y la persona vinculada.</p>
         </div>
+        <div data-tour="usuarios">
         <Dialog action={addUserAction} triggerLabel="Dar de alta" title="Dar de alta un usuario" description="La persona entra con su cuenta de Google.">
           
               <label className="block space-y-1 text-sm font-medium">
@@ -44,6 +45,7 @@ async function Content() {
               <SubmitButton pendingLabel="Guardando…" className="w-full">Dar de alta</SubmitButton>
             
         </Dialog>
+        </div>
       </div>
 
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

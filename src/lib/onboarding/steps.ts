@@ -10,6 +10,10 @@ export type TourStep = {
   icon: TourIcon;
   /** Roles que ven este paso. Si no se indica, lo ven todos. */
   roles?: Role[];
+  /** Página donde está el elemento. El recorrido navega ahí antes de mostrarlo. */
+  href: string;
+  /** Valor de data-tour del elemento a destacar. Sin valor, el paso se muestra centrado. */
+  target?: string;
 };
 
 export const TOUR_STEPS: TourStep[] = [
@@ -18,30 +22,40 @@ export const TOUR_STEPS: TourStep[] = [
     title: "Tu inicio",
     body: "Acá ves tu resumen. Cada widget muestra algo para mirar o algo para hacer, como votar una idea.",
     icon: "home",
+    href: "/",
+    target: "inicio",
   },
   {
     id: "personalizar",
     title: "Personalizá tu inicio",
     body: "Tocá Personalizar inicio para elegir qué widgets ver, cuántos elementos y de qué fuente son las ideas.",
     icon: "widgets",
+    href: "/",
+    target: "personalizar",
   },
   {
     id: "directorio",
     title: "Directorio",
     body: "Elegí un área para ver a sus integrantes. Confirmá tu propio perfil para aparecer en squads y propuestas.",
     icon: "users",
+    href: "/directorio",
+    target: "directorio",
   },
   {
     id: "ideas",
     title: "Ideas",
     body: "Una idea es algo que todavía no tiene cliente ni precio. Votala, comentala y, si madura, convertila en propuesta.",
     icon: "lightbulb",
+    href: "/ideas",
+    target: "ideas",
   },
   {
     id: "propuestas",
     title: "Propuestas",
     body: "Armá el equipo por roles, con horas y tarifas, y descargá el PDF para el cliente.",
     icon: "file",
+    href: "/propuestas",
+    target: "propuestas",
   },
   {
     id: "proyectos",
@@ -49,6 +63,8 @@ export const TOUR_STEPS: TourStep[] = [
     body: "Cada proyecto tiene sus squads. Desde acá sumás integrantes confirmados y cambiás el estado del proyecto.",
     icon: "folder",
     roles: ["lider", "admin"],
+    href: "/proyectos",
+    target: "proyectos",
   },
   {
     id: "estado-ideas",
@@ -56,6 +72,7 @@ export const TOUR_STEPS: TourStep[] = [
     body: "Podés cambiar el estado de una idea: abierta, en evaluación o cerrada.",
     icon: "shield",
     roles: ["lider", "admin"],
+    href: "/ideas",
   },
   {
     id: "usuarios",
@@ -63,12 +80,16 @@ export const TOUR_STEPS: TourStep[] = [
     body: "Desde el menú de configuración das de alta cuentas, cambiás roles y vinculás cada cuenta con su persona.",
     icon: "settings",
     roles: ["admin"],
+    href: "/usuarios",
+    target: "usuarios",
   },
   {
     id: "configuracion",
     title: "Configuración",
     body: "En el avatar de arriba a la derecha está el tema claro u oscuro, y cerrar sesión. Podés volver a ver este recorrido desde ahí.",
     icon: "settings",
+    href: "/",
+    target: "configuracion",
   },
 ];
 

@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "tour_closed_at" timestamp with time zone;

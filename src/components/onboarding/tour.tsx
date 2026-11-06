@@ -165,6 +165,8 @@ function Spotlight({
   const last = index === steps.length - 1;
   const Icon = ICONS[step.icon];
   const hasBox = box !== null && !searching;
+  // El globo se muestra recién cuando ya sabe dónde va: evita el salto desde el centro.
+  const ready = !searching;
 
   const cardStyle = placeCard(hasBox ? box : null);
 
@@ -190,7 +192,7 @@ function Spotlight({
       <div
         ref={cardRef}
         style={cardStyle}
-        className="fixed z-10 w-[min(340px,calc(100vw-2rem))] rounded-3xl border border-line bg-surface p-5 shadow-2xl"
+        className={`fixed z-10 w-[min(340px,calc(100vw-2rem))] rounded-3xl border border-line bg-surface p-5 shadow-2xl transition-opacity duration-200 ${ready ? "opacity-100" : "opacity-0"}`}
       >
         <div className="mb-4 flex gap-1.5" aria-hidden>
           {steps.map((s, i) => (

@@ -1,3 +1,4 @@
+import { cardSurface } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import { IconLink } from "@/components/ui/icon-link";
 import { notFound } from "next/navigation";
@@ -37,7 +38,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
         </a>
       </header>
 
-      <div className="overflow-x-auto rounded-3xl border border-line bg-surface p-2 shadow-sm"><table className="w-full text-left text-sm">
+      <div className={`overflow-x-auto p-2 ${cardSurface}`}><table className="w-full text-left text-sm">
         <thead className="border-b border-line font-mono text-xs text-muted">
           <tr><th className="py-2">Rol</th><th>Horas</th><th>Tarifa/h</th><th className="text-right">Subtotal</th></tr>
         </thead>
@@ -53,7 +54,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
         </tbody>
       </table></div>
 
-      <dl className="ml-auto grid w-full max-w-sm grid-cols-2 gap-x-8 gap-y-2 rounded-3xl border border-line bg-surface p-5 text-sm shadow-sm">
+      <dl className={`ml-auto grid w-full max-w-sm grid-cols-2 gap-x-8 gap-y-2 p-5 text-sm ${cardSurface}`}>
         <dt className="text-muted">Horas totales</dt><dd className="text-right">{totals.totalHours}</dd>
         <dt className="text-muted">Subtotal</dt><dd className="text-right">{money(totals.subtotal)}</dd>
         {proposal.discountPct > 0 && (
@@ -66,7 +67,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
       </dl>
 
       {proposal.notes && (
-        <section className="rounded-3xl border border-line bg-surface p-5 shadow-sm">
+        <section className={`p-5 ${cardSurface}`}>
           <h2 className="font-display text-lg">Notas</h2>
           <p className="whitespace-pre-line text-sm">{proposal.notes}</p>
         </section>

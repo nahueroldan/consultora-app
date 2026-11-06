@@ -1,3 +1,4 @@
+import { cardSurface } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import { IconLink } from "@/components/ui/icon-link";
 import { Suspense } from "react";
@@ -69,7 +70,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
         </form>
       )}
 
-      <section className="rounded-3xl border border-line bg-surface p-5 shadow-sm">
+      <section className={`p-5 ${cardSurface}`}>
         <h2 className="mb-3 font-display text-lg">Skills</h2>
         {skills.length === 0 ? (
           <p className="text-sm text-muted">Sin skills cargadas.</p>

@@ -27,60 +27,60 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
   const people = canSquad ? await listConfirmedPeople() : [];
 
   return (
-    <article className="space-y-8">
-      <Link href="/proyectos" className="text-sm text-zinc-500 hover:underline">← Proyectos</Link>
+    <article className="space-y-6">
+      <Link href="/proyectos" className="text-sm text-muted hover:text-accent">← Proyectos</Link>
       <header className="space-y-1">
-        <h1 className="text-2xl font-semibold">{project.name}</h1>
-        <p className="text-zinc-600">{project.client ?? "Sin cliente"} · {project.status}</p>
+        <h1 className="font-display text-3xl tracking-tight">{project.name}</h1>
+        <p className="text-muted">{project.client ?? "Sin cliente"} · {project.status}</p>
         {project.description && <p className="text-sm">{project.description}</p>}
       </header>
 
       {canEdit && (
         <form action={setProjectStatusAction} className="flex items-center gap-2">
           <input type="hidden" name="projectId" value={project.id} />
-          <select name="status" defaultValue={project.status} className="rounded-md border px-2 py-1">
+          <select name="status" defaultValue={project.status} className="rounded-2xl border border-line bg-cream px-3 py-2 text-sm">
             {PROJECT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
-          <button type="submit" className="rounded-md border px-3 py-1 text-sm">Cambiar estado</button>
+          <button type="submit" className="rounded-2xl border border-line bg-surface px-4 py-2 text-sm hover:border-accent">Cambiar estado</button>
         </form>
       )}
 
       {project.squads.map((squad) => {
         const members = project.members.filter((m) => m.squadId === squad.id);
         return (
-          <section key={squad.id} className="space-y-3 rounded-md border p-4">
-            <h2 className="font-semibold">Squad: {squad.name}</h2>
+          <section key={squad.id} className="space-y-3 rounded-3xl border border-line bg-surface p-5 shadow-sm">
+            <h2 className="font-display text-lg">Squad: {squad.name}</h2>
             <ul className="space-y-2 text-sm">
               {members.map((m) => (
                 <li key={m.personId} className="flex items-center gap-3">
                   <Link href={`/directorio/${m.personId}`} className="hover:underline">
                     {m.firstName} {m.lastName}
                   </Link>
-                  <span className="text-zinc-500">{m.roleInSquad ?? m.position ?? ""} · {m.allocationPct}%</span>
+                  <span className="font-mono text-xs text-muted">{m.roleInSquad ?? m.position ?? ""} · {m.allocationPct}%</span>
                   {canSquad && (
                     <form action={removeMemberAction} className="ml-auto">
                       <input type="hidden" name="squadId" value={squad.id} />
                       <input type="hidden" name="personId" value={m.personId} />
-                      <button type="submit" className="text-xs text-red-600">Quitar</button>
+                      <button type="submit" className="text-xs text-danger hover:underline">Quitar</button>
                     </form>
                   )}
                 </li>
               ))}
-              {members.length === 0 && <li className="text-zinc-500">Sin integrantes.</li>}
+              {members.length === 0 && <li className="text-muted">Sin integrantes.</li>}
             </ul>
 
             {canSquad && (
               <form action={addMemberAction} className="grid gap-2 md:grid-cols-5">
                 <input type="hidden" name="squadId" value={squad.id} />
-                <select name="personId" required className="rounded-md border px-2 py-1 md:col-span-2">
+                <select name="personId" required className="rounded-2xl border border-line bg-cream px-3 py-2 text-sm md:col-span-2">
                   <option value="">Elegir persona confirmada</option>
                   {people.map((p) => (
                     <option key={p.id} value={p.id}>{p.firstName} {p.lastName} {p.position ? `— ${p.position}` : ""}</option>
                   ))}
                 </select>
-                <input name="roleInSquad" placeholder="Rol en el squad" className="rounded-md border px-2 py-1" />
-                <input name="allocationPct" type="number" min={1} max={100} defaultValue={100} className="rounded-md border px-2 py-1" />
-                <button type="submit" className="rounded-md bg-zinc-900 px-3 py-1 text-white">Sumar</button>
+                <input name="roleInSquad" placeholder="Rol en el squad" className="rounded-2xl border border-line bg-cream px-3 py-2 text-sm" />
+                <input name="allocationPct" type="number" min={1} max={100} defaultValue={100} className="rounded-2xl border border-line bg-cream px-3 py-2 text-sm" />
+                <button type="submit" className="rounded-2xl bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover">Sumar</button>
               </form>
             )}
           </section>
@@ -90,8 +90,8 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
       {canSquad && (
         <form action={createSquadAction} className="flex gap-2">
           <input type="hidden" name="projectId" value={project.id} />
-          <input name="name" required placeholder="Nombre del nuevo squad" className="rounded-md border px-3 py-2" />
-          <button type="submit" className="rounded-md border px-3 py-2">Crear squad</button>
+          <input name="name" required placeholder="Nombre del nuevo squad" className="rounded-2xl border border-line bg-cream px-4 py-2.5 text-sm" />
+          <button type="submit" className="rounded-2xl bg-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-hover">Crear squad</button>
         </form>
       )}
     </article>
@@ -100,7 +100,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
 
 export default function ProyectoPage({ params }: { params: Promise<{ id: string }> }) {
   return (
-    <Suspense fallback={<p className="text-sm text-zinc-400">Cargando…</p>}>
+    <Suspense fallback={<p className="text-sm text-muted">Cargando…</p>}>
       <Content params={params} />
     </Suspense>
   );

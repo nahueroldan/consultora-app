@@ -14,6 +14,7 @@ export async function listProjects() {
       id: schema.projects.id,
       name: schema.projects.name,
       client: schema.projects.client,
+      url: schema.projects.url,
       status: schema.projects.status,
       squads: sql<number>`(select count(*)::int from ${schema.squads} s where s.project_id = ${schema.projects.id})`,
     })
@@ -78,6 +79,8 @@ export async function createProject(input: {
   name: string;
   client: string | null;
   description: string | null;
+  url?: string | null;
+  ideaId?: number | null;
   status: ProjectStatus;
   createdByEmail: string;
 }) {
@@ -122,4 +125,21 @@ export async function projectIdOfSquad(squadId: number): Promise<number | null> 
     .where(eq(schema.squads.id, squadId))
     .limit(1);
   return row?.projectId ?? null;
+}
+
+export async function updateProject(
+  id: number,
+  input: { name: string; client: string | null; description: string | null; url: string | null; status: ProjectStatus },
+) {
+  await db.update(schema.projects).set(input).where(eq(schema.projects.id, id));
+}
+
+/** Proyecto creado a partir de esta idea, si existe. */
+export async function projectFromIdea(ideaId: number) {
+  const [row] = await db
+    .select({ id: schema.projects.id, name: schema.projects.name })
+    .from(schema.projects)
+    .where(eq(schema.projects.ideaId, ideaId))
+    .limit(1);
+  return row ?? null;
 }

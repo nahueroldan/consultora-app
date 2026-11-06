@@ -42,6 +42,10 @@ async function Content() {
                   <input name="client" className={input} />
                 </label>
                 <label className="block space-y-1 text-sm font-medium">
+                  Enlace del producto o sitio (opcional)
+                  <input name="url" type="url" placeholder="https://…" className={input} />
+                </label>
+                <label className="block space-y-1 text-sm font-medium">
                   Descripción
                   <textarea name="description" rows={3} className={input} />
                 </label>

@@ -107,3 +107,53 @@ export async function countByStatus() {
   return Object.fromEntries(rows.map((r) => [r.status, r.n])) as Record<string, number>;
 }
 
+
+/** Resumen por área: cantidad de personas visibles. Pendientes solo si includePending. */
+export async function listAreaSummary(includePending: boolean) {
+  const rows = await db
+    .select({
+      area: schema.people.area,
+      n: sql<number>`count(*)::int`,
+    })
+    .from(schema.people)
+    .where(
+      and(
+        sql`${schema.people.area} is not null`,
+        includePending ? undefined : eq(schema.people.status, "confirmed"),
+      ),
+    )
+    .groupBy(schema.people.area)
+    .orderBy(sql`count(*) desc`, asc(schema.people.area));
+  return rows.map((r) => ({ area: r.area!, count: r.n }));
+}
+
+/** Página de personas de un área, para carga progresiva. */
+export async function listPeopleByArea(input: {
+  area: string;
+  q?: string;
+  offset: number;
+  limit: number;
+  includePending: boolean;
+}) {
+  const conditions = [eq(schema.people.area, input.area)];
+  if (!input.includePending) conditions.push(eq(schema.people.status, "confirmed"));
+  if (input.q) {
+    const like = `%${input.q}%`;
+    conditions.push(
+      or(ilike(schema.people.firstName, like), ilike(schema.people.lastName, like), ilike(schema.people.position, like))!,
+    );
+  }
+  return db
+    .select({
+      id: schema.people.id,
+      firstName: schema.people.firstName,
+      lastName: schema.people.lastName,
+      position: schema.people.position,
+      status: schema.people.status,
+    })
+    .from(schema.people)
+    .where(and(...conditions))
+    .orderBy(asc(schema.people.lastName), asc(schema.people.firstName))
+    .offset(input.offset)
+    .limit(input.limit);
+}

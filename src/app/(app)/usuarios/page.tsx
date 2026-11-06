@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { redirect } from "next/navigation";
 import { connection } from "next/server";
 import { Mail, UserRound } from "lucide-react";
 import { Card } from "@/components/ui/card";
@@ -17,8 +18,9 @@ const input = "w-full rounded-2xl border border-line bg-cream px-4 py-2.5 text-s
 async function Content() {
   await connection();
   const user = await requireUser();
+  // Solo admin: cualquier otro rol vuelve al inicio, sin ver la página.
   if (!can(user.role, "usuario:gestionar")) {
-    return <p className="text-muted">No tenés permiso para ver esta página.</p>;
+    redirect("/");
   }
   const users = await listUsers();
 

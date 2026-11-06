@@ -12,8 +12,8 @@ import { can, ROLES } from "@/lib/auth/roles";
 import { requireUser } from "@/lib/auth/session";
 import { listUsers } from "@/lib/data/users";
 import { addUserAction, updateUserAction } from "@/app/(app)/usuarios/actions";
+import { fieldClass as input } from "@/components/ui/field";
 
-const input = "w-full rounded-2xl border border-line bg-cream px-4 py-2.5 text-sm font-normal focus-visible:outline-2 focus-visible:outline-accent";
 
 async function Content() {
   await connection();

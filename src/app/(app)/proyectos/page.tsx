@@ -11,8 +11,8 @@ import { can } from "@/lib/auth/roles";
 import { requireUser } from "@/lib/auth/session";
 import { listProjects, PROJECT_STATUSES } from "@/lib/data/projects";
 import { createProjectAction } from "@/app/(app)/proyectos/actions";
+import { fieldClass as input } from "@/components/ui/field";
 
-const input = "w-full rounded-2xl border border-line bg-cream px-4 py-2.5 text-sm font-normal focus-visible:outline-2 focus-visible:outline-accent";
 
 const TONE = { propuesta: "warning", activo: "success", cerrado: "neutral" } as const;
 

@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { SubmitButton, buttonBase } from "@/components/ui/button";
+import { fieldClass as input } from "@/components/ui/field";
 import { FormError, PendingContext, useServerForm } from "@/components/ui/server-form";
 import type { ActionResult } from "@/lib/form-result";
 import { computeProposalTotals, type ProposalItem } from "@/lib/proposals/total";
@@ -12,8 +13,6 @@ const STEPS = ["Proyecto", "Equipo", "Condiciones", "Revisión"] as const;
 const ROLE_PRESETS = ["Dev", "EM", "QA", "UX", "Head"];
 const EXTRA_ROWS = 3;
 
-const input =
-  "w-full rounded-2xl border border-line bg-cream px-4 py-2.5 text-sm font-normal focus-visible:outline-2 focus-visible:outline-accent";
 
 type Project = { id: number; name: string };
 

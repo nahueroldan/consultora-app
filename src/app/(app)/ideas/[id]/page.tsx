@@ -14,8 +14,8 @@ import { requireUser } from "@/lib/auth/session";
 import { getIdea, IDEA_STATUSES, IDEA_STATUS_LABEL } from "@/lib/data/ideas";
 import { projectFromIdea } from "@/lib/data/projects";
 import { commentIdeaAction, promoteIdeaToProjectAction, setIdeaStatusAction, voteIdeaAction } from "@/app/(app)/ideas/actions";
+import { fieldClass as input } from "@/components/ui/field";
 
-const input = "w-full rounded-2xl border border-line bg-cream px-4 py-2.5 text-sm font-normal focus-visible:outline-2 focus-visible:outline-accent";
 
 async function Content({ params }: { params: Promise<{ id: string }> }) {
   await connection();

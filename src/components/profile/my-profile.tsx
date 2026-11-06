@@ -5,6 +5,7 @@ import { SubmitButton } from "@/components/ui/button";
 import { ServerForm } from "@/components/ui/server-form";
 import { VISIBLE_FIELDS, normalizeVisibility, type VisibleField } from "@/lib/profile/visibility";
 import type { ActionResult } from "@/lib/form-result";
+import { fieldClass as input } from "@/components/ui/field";
 
 type OwnProfile = {
   position: string | null;
@@ -22,7 +23,6 @@ const LABELS: Record<VisibleField, string> = {
   skills: "Skills",
 };
 
-const input = "w-full rounded-2xl border border-line bg-cream px-4 py-2.5 text-sm font-normal focus-visible:outline-2 focus-visible:outline-accent";
 
 /** Editor del propio perfil. Elegís qué ve el resto del directorio, campo por campo. */
 export function MyProfileModal({

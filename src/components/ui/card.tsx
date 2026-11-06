@@ -1,7 +1,10 @@
 import Link from "next/link";
 
-const base =
+/** Superficie de card: radio grande, borde suave y sombra difusa. */
+export const cardSurface =
   "rounded-3xl border border-line bg-surface shadow-[0_1px_2px_rgb(0_0_0/0.04),0_8px_24px_-12px_rgb(0_0_0/0.12)]";
+
+const base = cardSurface;
 
 export function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return <div className={`${base} p-5 ${className}`}>{children}</div>;

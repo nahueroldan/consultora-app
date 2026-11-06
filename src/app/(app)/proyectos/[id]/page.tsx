@@ -1,6 +1,7 @@
 import { cardSurface } from "@/components/ui/card";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft, ExternalLink, UserMinus } from "lucide-react";
+import { Tooltip } from "@/components/ui/tooltip";
 import { Dialog } from "@/components/ui/dialog";
 import { SubmitButton } from "@/components/ui/button";
 import { updateProjectAction } from "@/app/(app)/proyectos/actions";
@@ -162,7 +163,15 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
                     <ServerForm action={removeMemberAction} className="ml-auto">
                       <input type="hidden" name="squadId" value={squad.id} />
                       <input type="hidden" name="personId" value={m.personId} />
-                      <button type="submit" className="text-xs text-danger hover:underline">Quitar</button>
+                      <Tooltip label="Quitar del squad">
+                        <button
+                          type="submit"
+                          aria-label={`Quitar a ${m.firstName} del squad`}
+                          className="inline-flex size-8 items-center justify-center rounded-xl border border-line text-danger transition hover:bg-danger-soft focus-visible:outline-2 focus-visible:outline-accent"
+                        >
+                          <UserMinus size={15} aria-hidden />
+                        </button>
+                      </Tooltip>
                     </ServerForm>
                   )}
                 </li>

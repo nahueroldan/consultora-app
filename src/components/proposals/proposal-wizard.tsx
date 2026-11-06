@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { SubmitButton, buttonBase } from "@/components/ui/button";
@@ -34,7 +33,6 @@ export function ProposalWizard({
   const [discount, setDiscount] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
   const { onSubmit, pending, error } = useServerForm(action);
-  const reduce = useReducedMotion();
 
   const close = () => {
     setOpen(false);
@@ -116,15 +114,8 @@ export function ProposalWizard({
 
           <form ref={formRef} onSubmit={onSubmit} className="flex flex-1 flex-col" aria-busy={pending}>
             <PendingContext.Provider value={pending}>
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={step}
-                initial={reduce ? false : { opacity: 0, x: 12 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={reduce ? undefined : { opacity: 0, x: -12 }}
-                transition={{ duration: 0.2 }}
-                className="space-y-4"
-              >
+            {/* Los cuatro pasos quedan montados: cambiar de paso no debe borrar lo cargado. */}
+            <div className="space-y-4">
                 <div data-step="0" className={`${hiddenClass(0)} space-y-4`}>
                   <label className="block space-y-1 text-sm font-medium">
                     Proyecto
@@ -195,8 +186,7 @@ export function ProposalWizard({
                     {summary.length === 0 && <li className="text-muted">Todavía no cargaste horas en el equipo.</li>}
                   </ul>
                 </div>
-              </motion.div>
-            </AnimatePresence>
+            </div>
 
             <div className="mt-auto space-y-3 border-t border-line pt-4">
               <FormError message={error} />

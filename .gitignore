@@ -44,3 +44,8 @@ next-env.d.ts
 /data/
 !.env.example
 .neon
+
+# pruebas de navegador
+/test-results/
+/playwright-report/
+/blob-report/

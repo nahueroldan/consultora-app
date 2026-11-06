@@ -19,7 +19,7 @@ export function AppShell({
   email,
   role,
   isAdmin,
-  tourClosed,
+  tourAutoOpen,
   linkCandidates,
   ownProfile,
 }: {
@@ -27,14 +27,15 @@ export function AppShell({
   email: string;
   role: string | null;
   isAdmin: boolean;
-  tourClosed: boolean;
+  /** El recorrido se abre solo después de la ventana "¿Sos vos?", si la cuenta no lo cerró antes. */
+  tourAutoOpen: boolean;
   /** Si viene, la cuenta todavía no tiene perfil vinculado: se muestra "¿Sos vos?". */
   linkCandidates: { id: number; firstName: string; lastName: string; position: string | null }[] | null;
   ownProfile: { position: string | null; city: string | null; country: string | null; linkedin: string | null; visibility: unknown } | null;
 }) {
   const steps = tourStepsFor(role as Role | null);
   return (
-    <TourProvider steps={steps} autoOpen={!tourClosed} closeAction={closeTourAction}>
+    <TourProvider steps={steps} autoOpen={tourAutoOpen} closeAction={closeTourAction}>
     <div className="flex min-h-screen flex-col">
       {/* Barra superior: la marca lleva al inicio; a la derecha, configuración. */}
       <header className="sticky top-0 z-20 border-b border-line bg-cream/90 backdrop-blur">

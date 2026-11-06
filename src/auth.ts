@@ -9,7 +9,7 @@ import { ROLES, type Role } from "@/lib/auth/roles";
 
 async function findUserByEmail(email: string) {
   const [row] = await db
-    .select({ role: schema.users.role })
+    .select({ role: schema.users.role, personId: schema.users.personId })
     .from(schema.users)
     .where(eq(schema.users.email, email))
     .limit(1);
@@ -46,12 +46,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const row = await findUserByEmail(email);
         const role = row?.role;
         token.role = role && (ROLES as readonly string[]).includes(role) ? role : null;
+        token.personId = row?.personId ?? null;
       }
       return token;
     },
 
     async session({ session, token }) {
       session.user.role = (token.role as Role | null) ?? null;
+      session.user.personId = (token.personId as number | null) ?? null;
       return session;
     },
   },

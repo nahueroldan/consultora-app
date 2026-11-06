@@ -29,6 +29,7 @@ export function UserMenu({
   updateProfileAction: (fd: FormData) => Promise<ActionResult>;
 }) {
   const [open, setOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const { openTour } = useTour();
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -63,6 +64,15 @@ export function UserMenu({
         {initial || <Settings size={18} aria-hidden />}
       </button>
 
+      {ownProfile && (
+        <MyProfileModal
+          profile={ownProfile}
+          action={updateProfileAction}
+          open={profileOpen}
+          onClose={() => setProfileOpen(false)}
+        />
+      )}
+
       {open && (
         <div
           role="menu"
@@ -77,23 +87,17 @@ export function UserMenu({
 
           <div className="space-y-1">
             {ownProfile && (
-              <MyProfileModal
-                profile={ownProfile}
-                action={updateProfileAction}
-                trigger={(openProfile) => (
-                  <button
-                    role="menuitem"
-                    type="button"
-                    onClick={() => {
-                      setOpen(false);
-                      openProfile();
-                    }}
-                    className="flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-left text-sm hover:bg-cream"
-                  >
-                    <UserRound size={16} aria-hidden /> Mi perfil
-                  </button>
-                )}
-              />
+              <button
+                role="menuitem"
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  setProfileOpen(true);
+                }}
+                className="flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-left text-sm hover:bg-cream"
+              >
+                <UserRound size={16} aria-hidden /> Mi perfil
+              </button>
             )}
             <button
               role="menuitem"

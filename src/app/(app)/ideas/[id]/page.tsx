@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { ArrowLeft, FileText, FolderKanban } from "lucide-react";
+import { ArrowLeft, FileText, FolderKanban, FolderPlus } from "lucide-react";
+import { Tooltip } from "@/components/ui/tooltip";
 import { IconLink } from "@/components/ui/icon-link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -63,7 +64,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
         {canPromote && (
           <ServerForm action={promoteIdeaToProjectAction}>
             <input type="hidden" name="ideaId" value={idea.id} />
-            <SubmitButton variant="secondary" pendingLabel="Creando proyecto…">Convertir en proyecto</SubmitButton>
+            <Tooltip label="Convertir en proyecto"><SubmitButton variant="secondary" pendingLabel="…" className="size-10 px-0" aria-label="Convertir en proyecto"><FolderPlus size={18} aria-hidden /></SubmitButton></Tooltip>
           </ServerForm>
         )}
         {idea.linkedProposals.map((p) => (

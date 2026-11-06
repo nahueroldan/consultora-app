@@ -29,8 +29,10 @@ async function Board() {
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 data-tour="inicio" className="font-display text-3xl tracking-tight">Inicio</h1>
-          <p className="text-sm text-muted">Hola, {user.name ?? user.email.split("@")[0]}. Tu resumen de hoy.</p>
+          <h1 data-tour="inicio" className="font-display text-3xl tracking-tight">
+            Hola, {(user.name ?? user.email.split("@")[0]).split(" ")[0]}
+          </h1>
+          <p className="text-sm text-muted">Tu resumen de hoy.</p>
         </div>
         <WidgetCustomizer widgets={all} action={saveWidgetsAction} />
       </div>

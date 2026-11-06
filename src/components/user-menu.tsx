@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { CircleHelp, LogOut, Settings, UserRound, Users } from "lucide-react";
 import { useTour } from "@/components/onboarding/tour";
 import { MyProfileModal } from "@/components/profile/my-profile";
+import { ReportIssueMenuItem } from "@/components/report-issue";
+import { reportIssueAction } from "@/app/(app)/reportar-actions";
 import type { ActionResult } from "@/lib/form-result";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -99,6 +101,7 @@ export function UserMenu({
                 <UserRound size={16} aria-hidden /> Mi perfil
               </button>
             )}
+            <ReportIssueMenuItem action={reportIssueAction} />
             <button
               role="menuitem"
               type="button"

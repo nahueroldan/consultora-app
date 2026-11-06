@@ -2,38 +2,40 @@
 
 /* Tokens semánticos. Light por defecto; .dark los reemplaza. */
 :root {
-  --cream: #fff8e7;
+  --cream: #eef5fc;
   --surface: #ffffff;
-  --ink: #1d1714;
-  --muted: #74655c;
-  --line: #eadfd3;
-  --accent: #c2552b;
-  --accent-hover: #a94620;
-  --accent-soft: #fbe6da;
-  --success: #2f7a50;
-  --success-soft: #dff1e6;
-  --warning: #8a5d0c;
-  --warning-soft: #fbefd0;
+  --ink: #0d1b2e;
+  --muted: #5a6b84;
+  --line: #d3e1f1;
+  --accent: #0a6fb5;
+  --accent-2: #1fb6d4;
+  --accent-hover: #075a94;
+  --accent-soft: #dcecfa;
+  --success: #17805d;
+  --success-soft: #d9f3e8;
+  --warning: #8a6100;
+  --warning-soft: #fdf1cc;
   --danger: #b42318;
   --danger-soft: #fde4e1;
   color-scheme: light;
 }
 
 .dark {
-  --cream: #14110f;
-  --surface: #1f1a17;
-  --ink: #f5ede6;
-  --muted: #a99a8f;
-  --line: #3a302b;
-  --accent: #ff8a5c;
-  --accent-hover: #ffa37f;
-  --accent-soft: #3a2118;
-  --success: #6fcf97;
-  --success-soft: #1d3327;
+  --cream: #06101e;
+  --surface: #0d1a2c;
+  --ink: #e4f0fb;
+  --muted: #8aa1bd;
+  --line: #1d3350;
+  --accent: #4cc3ff;
+  --accent-2: #2de2d0;
+  --accent-hover: #7fd5ff;
+  --accent-soft: #112a44;
+  --success: #5fd6a4;
+  --success-soft: #0f2f27;
   --warning: #f2c46b;
-  --warning-soft: #3b2f15;
+  --warning-soft: #33280f;
   --danger: #ff8a80;
-  --danger-soft: #3d1c1a;
+  --danger-soft: #3a1a1f;
   color-scheme: dark;
 }
 
@@ -44,6 +46,7 @@
   --color-muted: var(--muted);
   --color-line: var(--line);
   --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
   --color-accent-hover: var(--accent-hover);
   --color-accent-soft: var(--accent-soft);
   --color-success: var(--success);
@@ -68,4 +71,18 @@ body {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Degradados de la familia de acento: de azul profundo a cian. */
+.brand-gradient {
+  background-image: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+}
+.brand-gradient-soft {
+  background-image: linear-gradient(135deg, var(--accent-soft) 0%, var(--surface) 70%);
+}
+.brand-text {
+  background-image: linear-gradient(120deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }

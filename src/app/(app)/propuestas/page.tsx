@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { Suspense } from "react";
 import { connection } from "next/server";
-import { Badge, Card } from "@/components/ui/card";
+import { TicketList, TicketRow } from "@/components/ui/ticket-row";
+import { timeAgo } from "@/lib/time-ago";
 import { ProposalWizard } from "@/components/proposals/proposal-wizard";
 import { EmptyState } from "@/components/ui/empty-state";
 import { CardSkeleton } from "@/components/ui/skeleton";
@@ -44,22 +44,18 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
       {proposals.length === 0 ? (
         <EmptyState title="Todavía no hay propuestas" description="Creá la primera desde el botón de arriba." />
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <TicketList>
           {proposals.map((p) => (
-            <li key={p.id}>
-              <Link href={`/propuestas/${p.id}`} className="block h-full rounded-2xl focus-visible:outline-2 focus-visible:outline-accent">
-                <Card className="flex h-full flex-col gap-3 transition hover:border-accent hover:shadow">
-                  <div className="flex items-start justify-between gap-2">
-                    <h2 className="font-semibold">{p.title}</h2>
-                    {p.discountPct > 0 && <Badge tone="warning">-{p.discountPct}%</Badge>}
-                  </div>
-                  <p className="text-sm text-muted">{p.projectName}</p>
-                  <p className="mt-auto text-xs text-muted">{p.createdAt.toLocaleDateString("es-AR")}</p>
-                </Card>
-              </Link>
-            </li>
+            <TicketRow
+              key={p.id}
+              href={`/propuestas/${p.id}`}
+              initial={p.title.charAt(0)}
+              title={p.title}
+              meta={[p.projectName, timeAgo(p.createdAt)]}
+              status={p.discountPct > 0 ? { label: `-${p.discountPct}%`, tone: "warning" } : undefined}
+            />
           ))}
-        </ul>
+        </TicketList>
       )}
     </section>
   );

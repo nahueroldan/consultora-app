@@ -1,0 +1,49 @@
+"use client";
+
+import { useFormStatus } from "react-dom";
+
+type Variant = "primary" | "secondary" | "ghost" | "danger";
+
+const variants: Record<Variant, string> = {
+  primary: "bg-accent text-white hover:bg-accent-hover",
+  secondary: "border border-line bg-surface text-ink hover:bg-accent-soft",
+  ghost: "text-muted hover:bg-accent-soft hover:text-ink",
+  danger: "bg-danger-soft text-danger hover:bg-danger hover:text-white",
+};
+
+export const buttonBase =
+  "inline-flex min-h-10 items-center justify-center gap-2 rounded-xl px-4 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60";
+
+/**
+ * Botón de envío de formularios. Muestra su propio estado de carga mientras
+ * el servidor responde; no hay "Cargando" global.
+ */
+export function SubmitButton({
+  children,
+  pendingLabel = "Guardando…",
+  variant = "primary",
+  className = "",
+}: {
+  children: React.ReactNode;
+  pendingLabel?: string;
+  variant?: Variant;
+  className?: string;
+}) {
+  const { pending } = useFormStatus();
+  return (
+    <button
+      type="submit"
+      disabled={pending}
+      aria-busy={pending}
+      className={`${buttonBase} ${variants[variant]} ${className}`}
+    >
+      {pending && (
+        <span
+          aria-hidden
+          className="size-4 animate-spin rounded-full border-2 border-current border-r-transparent"
+        />
+      )}
+      {pending ? pendingLabel : children}
+    </button>
+  );
+}

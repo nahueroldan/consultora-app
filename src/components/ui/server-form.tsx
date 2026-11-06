@@ -61,11 +61,14 @@ export function ServerForm({
 }) {
   const { onSubmit, pending, error } = useServerForm(action, onSuccess);
   return (
-    <form onSubmit={onSubmit} className={className} aria-busy={pending}>
+    <form onSubmit={onSubmit} aria-busy={pending}>
+      {/* El layout (space-y, grid, gap) va en el contenedor de los hijos: el fieldset no tiene caja. */}
       <fieldset disabled={pending} className="contents">
-        <PendingContext.Provider value={pending}>
-          {children}
-        </PendingContext.Provider>
+        <div className={className}>
+          <PendingContext.Provider value={pending}>
+            {children}
+          </PendingContext.Provider>
+        </div>
       </fieldset>
       <FormError message={error} />
     </form>

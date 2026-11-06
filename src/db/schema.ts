@@ -1,3 +1,4 @@
+import { ROLES } from "@/lib/auth/roles";
 import {
   boolean,
   integer,
@@ -9,6 +10,8 @@ import {
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
+
+export const userRole = pgEnum("user_role", ROLES);
 
 /**
  * pending: importado del portal, aún no confirmado por la persona.
@@ -60,4 +63,21 @@ export const personSkills = pgTable(
     level: integer("level"),
   },
   (t) => [primaryKey({ columns: [t.personId, t.skillId] })],
+);
+
+/**
+ * Cuenta que puede entrar a la app (Google). Separada de people:
+ * una persona del directorio puede no tener cuenta, y una cuenta puede no ser una persona del directorio.
+ */
+export const users = pgTable(
+  "users",
+  {
+    id: serial("id").primaryKey(),
+    email: text("email").notNull(),
+    name: text("name"),
+    role: userRole("role").notNull().default("colaborador"),
+    personId: integer("person_id").references(() => people.id, { onDelete: "set null" }),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [uniqueIndex("users_email_idx").on(t.email)],
 );

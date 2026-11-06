@@ -166,8 +166,8 @@ function Spotlight({
   const Icon = ICONS[step.icon];
   const hasBox = box !== null && !searching;
   // El globo se muestra recién cuando ya sabe dónde va: evita el salto desde el centro.
-  const ready = !searching;
 
+  // Siempre con top/left para que el paso entre posiciones se anime.
   const cardStyle = placeCard(hasBox ? box : null);
 
   return (
@@ -186,13 +186,13 @@ function Spotlight({
           }}
         />
       ) : (
-        <div aria-hidden className="pointer-events-none fixed inset-0 bg-ink/60" />
+        <div aria-hidden className="pointer-events-none fixed inset-0 bg-ink/25 transition-colors duration-300" />
       )}
 
       <div
         ref={cardRef}
         style={cardStyle}
-        className={`fixed z-10 w-[min(340px,calc(100vw-2rem))] rounded-3xl border border-line bg-surface p-5 shadow-2xl transition-opacity duration-200 ${ready ? "opacity-100" : "opacity-0"}`}
+        className={`fixed z-10 w-[min(340px,calc(100vw-2rem))] rounded-3xl border border-line bg-surface p-5 shadow-2xl transition-[top,left] duration-300 ease-out`}
       >
         <div className="mb-4 flex gap-1.5" aria-hidden>
           {steps.map((s, i) => (
@@ -250,15 +250,20 @@ function Spotlight({
   );
 }
 
-/** Ubica el globo debajo del elemento, o encima si no hay lugar; sin elemento, centrado. */
+/**
+ * Ubica el globo debajo del elemento o encima si no hay lugar.
+ * Sin elemento todavía, queda anclado abajo a la derecha (en móvil, abajo al centro).
+ */
 function placeCard(box: Box | null): React.CSSProperties {
-  if (typeof window === "undefined" || !box) {
-    return { top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
-  }
+  const estimatedHeight = 230;
+  if (typeof window === "undefined") return { top: 0, left: 0 };
   const vw = window.innerWidth;
   const vh = window.innerHeight;
-  const estimatedHeight = 230;
   const width = Math.min(CARD_WIDTH, vw - 32);
+  if (!box) {
+    const left = vw >= 768 ? vw - width - 24 : Math.max(16, (vw - width) / 2);
+    return { top: Math.max(16, vh - estimatedHeight - 24), left };
+  }
   const left = Math.min(Math.max(16, box.left), vw - width - 16);
   const spaceBelow = vh - (box.top + box.height);
   if (spaceBelow > estimatedHeight + CARD_GAP) {

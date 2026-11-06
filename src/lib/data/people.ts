@@ -1,5 +1,6 @@
-import { and, asc, eq, ilike, or, sql } from "drizzle-orm";
+import { and, asc, eq, ilike, inArray, or, sql } from "drizzle-orm";
 import { db, schema } from "@/db";
+import { groupOfArea } from "@/lib/data/area-groups";
 
 export type DirectoryFilters = {
   q?: string;
@@ -108,13 +109,10 @@ export async function countByStatus() {
 }
 
 
-/** Resumen por área: cantidad de personas visibles. Pendientes solo si includePending. */
-export async function listAreaSummary(includePending: boolean) {
-  const rows = await db
-    .select({
-      area: schema.people.area,
-      n: sql<number>`count(*)::int`,
-    })
+/** Áreas crudas del portal con su cantidad, según la visibilidad. */
+async function rawAreaCounts(includePending: boolean) {
+  return db
+    .select({ area: schema.people.area, n: sql<number>`count(*)::int` })
     .from(schema.people)
     .where(
       and(
@@ -122,9 +120,28 @@ export async function listAreaSummary(includePending: boolean) {
         includePending ? undefined : eq(schema.people.status, "confirmed"),
       ),
     )
-    .groupBy(schema.people.area)
-    .orderBy(sql`count(*) desc`, asc(schema.people.area));
-  return rows.map((r) => ({ area: r.area!, count: r.n }));
+    .groupBy(schema.people.area);
+}
+
+/** Resumen por grupo de áreas: cantidad de personas visibles en cada grupo. */
+export async function listAreaSummary(includePending: boolean) {
+  const raw = await rawAreaCounts(includePending);
+  const totals = new Map<string, number>();
+  for (const r of raw) {
+    const group = groupOfArea(r.area!);
+    totals.set(group, (totals.get(group) ?? 0) + r.n);
+  }
+  return [...totals.entries()]
+    .map(([area, count]) => ({ area, count }))
+    .sort((a, b) => b.count - a.count || a.area.localeCompare(b.area));
+}
+
+/** Nombres crudos de las áreas que pertenecen a un grupo. */
+async function rawAreasOfGroup(group: string): Promise<string[]> {
+  const raw = await rawAreaCounts(true);
+  return raw
+    .map((r) => r.area!)
+    .filter((a) => groupOfArea(a) === group);
 }
 
 /** Página de personas de un área, para carga progresiva. */
@@ -135,7 +152,9 @@ export async function listPeopleByArea(input: {
   limit: number;
   includePending: boolean;
 }) {
-  const conditions = [eq(schema.people.area, input.area)];
+  const rawNames = await rawAreasOfGroup(input.area);
+  if (rawNames.length === 0) return [];
+  const conditions = [inArray(schema.people.area, rawNames)];
   if (!input.includePending) conditions.push(eq(schema.people.status, "confirmed"));
   if (input.q) {
     const like = `%${input.q}%`;

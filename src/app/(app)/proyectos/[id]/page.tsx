@@ -11,6 +11,8 @@ import { connection } from "next/server";
 import { can } from "@/lib/auth/roles";
 import { requireUser } from "@/lib/auth/session";
 import { getProject, listConfirmedPeople, PROJECT_STATUSES } from "@/lib/data/projects";
+import { listInterests, myInterest } from "@/lib/data/interests";
+import { decideInterestAction, expressInterestAction } from "@/app/(app)/proyectos/interest-actions";
 const input = "w-full rounded-2xl border border-line bg-cream px-4 py-2.5 text-sm font-normal focus-visible:outline-2 focus-visible:outline-accent";
 import {
   addMemberAction,
@@ -30,6 +32,8 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
   if (!project) notFound();
 
   const canEdit = can(user.role, "proyecto:editar");
+  const myStatus = await myInterest(projectId, user.email);
+  const interests = canEdit ? await listInterests(projectId) : [];
   const canSquad = can(user.role, "squad:editar");
   const people = canSquad ? await listConfirmedPeople() : [];
 
@@ -85,6 +89,61 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
           <button type="submit" className="rounded-2xl border border-line bg-surface px-4 py-2 text-sm hover:border-accent">Cambiar estado</button>
         </ServerForm>
       )}
+
+      <section className="space-y-3 rounded-3xl border border-line bg-surface p-5 shadow-sm">
+        <h2 className="font-display text-lg">Quiero sumarme</h2>
+        {myStatus ? (
+          <p className="text-sm text-muted">
+            Ya pediste sumarte.{" "}
+            <span className="font-mono text-xs">
+              {myStatus === "pendiente" ? "pendiente de respuesta" : myStatus}
+            </span>
+          </p>
+        ) : (
+          <ServerForm action={expressInterestAction}>
+            <input type="hidden" name="projectId" value={project.id} />
+            <SubmitButton pendingLabel="Enviando…">Quiero sumarme a este proyecto</SubmitButton>
+          </ServerForm>
+        )}
+
+        {canEdit && (
+          <div className="space-y-2 pt-3">
+            <h3 className="text-sm font-semibold">Interesados · {interests.length}</h3>
+            {interests.length === 0 && <p className="text-sm text-muted">Todavía nadie pidió sumarse.</p>}
+            <ul className="space-y-2">
+              {interests.map((i) => (
+                <li key={i.userEmail} className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-cream px-4 py-3 text-sm">
+                  <div className="min-w-0">
+                    <p className="truncate font-medium">
+                      {i.firstName ? `${i.firstName} ${i.lastName}` : i.userEmail}
+                    </p>
+                    <p className="font-mono text-xs text-muted">
+                      {i.status}{i.personId ? "" : " · sin perfil vinculado"}
+                    </p>
+                  </div>
+                  {i.status === "pendiente" && (
+                    <div className="flex gap-2">
+                      <ServerForm action={decideInterestAction}>
+                        <input type="hidden" name="projectId" value={project.id} />
+                        <input type="hidden" name="userEmail" value={i.userEmail} />
+                        <input type="hidden" name="decision" value="aceptada" />
+                        <SubmitButton variant="secondary" pendingLabel="…" className="min-h-9">Aceptar</SubmitButton>
+                      </ServerForm>
+                      <ServerForm action={decideInterestAction}>
+                        <input type="hidden" name="projectId" value={project.id} />
+                        <input type="hidden" name="userEmail" value={i.userEmail} />
+                        <input type="hidden" name="decision" value="rechazada" />
+                        <SubmitButton variant="secondary" pendingLabel="…" className="min-h-9">Rechazar</SubmitButton>
+                      </ServerForm>
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+            <p className="text-xs text-muted">Para sumar a un aceptado, primero tiene que estar vinculado a su perfil. Después lo agregás a un squad.</p>
+          </div>
+        )}
+      </section>
 
       {project.squads.map((squad) => {
         const members = project.members.filter((m) => m.squadId === squad.id);

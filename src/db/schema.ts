@@ -196,3 +196,19 @@ export const userPreferences = pgTable("user_preferences", {
   widgets: jsonb("widgets").notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+export const interestStatus = pgEnum("interest_status", ["pendiente", "aceptada", "rechazada"]);
+
+/** Personas que quieren sumarse a un proyecto. El líder decide. */
+export const projectInterests = pgTable(
+  "project_interests",
+  {
+    projectId: integer("project_id")
+      .notNull()
+      .references(() => projects.id, { onDelete: "cascade" }),
+    userEmail: text("user_email").notNull(),
+    status: interestStatus("status").notNull().default("pendiente"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.projectId, t.userEmail] })],
+);

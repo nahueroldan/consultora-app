@@ -3,6 +3,7 @@ import { connection } from "next/server";
 import { Mail, UserRound } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Dialog } from "@/components/ui/dialog";
+import { ServerForm } from "@/components/ui/server-form";
 import { SubmitButton } from "@/components/ui/button";
 import { CardSkeleton } from "@/components/ui/skeleton";
 import { FadeIn } from "@/components/motion";
@@ -30,7 +31,7 @@ async function Content() {
         </div>
         <Dialog triggerLabel="Dar de alta" title="Dar de alta un usuario" description="La persona entra con su cuenta de Google.">
           {() => (
-            <form action={addUserAction} className="space-y-4">
+            <ServerForm action={addUserAction} className="space-y-4">
               <label className="block space-y-1 text-sm font-medium">
                 Email
                 <input name="email" type="email" required placeholder="email@ejemplo.com" className={input} />
@@ -42,7 +43,7 @@ async function Content() {
                 </select>
               </label>
               <SubmitButton pendingLabel="Guardando…" className="w-full">Dar de alta</SubmitButton>
-            </form>
+            </ServerForm>
           )}
         </Dialog>
       </div>
@@ -64,7 +65,7 @@ async function Content() {
                     </p>
                   </div>
                 </div>
-                <form action={updateUserAction} className="mt-auto grid gap-2">
+                <ServerForm action={updateUserAction} className="mt-auto grid gap-2">
                   <input type="hidden" name="id" value={u.id} />
                   <label className="space-y-1 text-xs font-medium text-muted">
                     Rol
@@ -77,7 +78,7 @@ async function Content() {
                     <input name="personId" type="number" defaultValue={u.personId ?? ""} placeholder="Ej.: 42" className={input} />
                   </label>
                   <SubmitButton variant="secondary" pendingLabel="Guardando…">Guardar</SubmitButton>
-                </form>
+                </ServerForm>
               </Card>
             </FadeIn>
           </li>

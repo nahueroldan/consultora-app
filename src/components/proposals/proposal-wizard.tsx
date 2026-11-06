@@ -5,6 +5,8 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Check, ChevronLeft, ChevronRight } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
 import { SubmitButton, buttonBase } from "@/components/ui/button";
+import { FormError, PendingContext, useServerForm } from "@/components/ui/server-form";
+import type { ActionResult } from "@/lib/form-result";
 import { computeProposalTotals, type ProposalItem } from "@/lib/proposals/total";
 
 const STEPS = ["Proyecto", "Equipo", "Condiciones", "Revisión"] as const;
@@ -21,13 +23,14 @@ export function ProposalWizard({
   action,
 }: {
   projects: Project[];
-  action: (fd: FormData) => Promise<void>;
+  action: (fd: FormData) => Promise<ActionResult>;
 }) {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [summary, setSummary] = useState<ProposalItem[]>([]);
   const [discount, setDiscount] = useState(0);
   const formRef = useRef<HTMLFormElement>(null);
+  const { onSubmit, pending, error } = useServerForm(action);
   const reduce = useReducedMotion();
 
   const close = () => {
@@ -108,13 +111,8 @@ export function ProposalWizard({
             ))}
           </ol>
 
-          <form
-            ref={formRef}
-            action={async (fd) => {
-              await action(fd);
-            }}
-            className="flex flex-1 flex-col"
-          >
+          <form ref={formRef} onSubmit={onSubmit} className="flex flex-1 flex-col" aria-busy={pending}>
+            <PendingContext.Provider value={pending}>
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
                 key={step}
@@ -190,7 +188,9 @@ export function ProposalWizard({
               </motion.div>
             </AnimatePresence>
 
-            <div className="mt-auto flex items-center justify-between gap-3 border-t border-line pt-4">
+            <div className="mt-auto space-y-3 border-t border-line pt-4">
+              <FormError message={error} />
+            <div className="flex items-center justify-between gap-3">
               <button
                 type="button"
                 onClick={() => setStep((s) => Math.max(0, s - 1))}
@@ -207,6 +207,8 @@ export function ProposalWizard({
                 <SubmitButton pendingLabel="Creando propuesta…">Crear propuesta</SubmitButton>
               )}
             </div>
+            </div>
+            </PendingContext.Provider>
           </form>
         </div>
       </Modal>

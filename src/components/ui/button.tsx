@@ -1,6 +1,8 @@
 "use client";
 
+import { useContext } from "react";
 import { useFormStatus } from "react-dom";
+import { PendingContext } from "@/components/ui/server-form";
 
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 
@@ -29,7 +31,9 @@ export function SubmitButton({
   variant?: Variant;
   className?: string;
 }) {
-  const { pending } = useFormStatus();
+  const formStatus = useFormStatus().pending;
+  const shared = useContext(PendingContext);
+  const pending = shared ?? formStatus;
   return (
     <button
       type="submit"

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ServerForm } from "@/components/ui/server-form";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { connection } from "next/server";
@@ -36,13 +37,13 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
       </header>
 
       {canEdit && (
-        <form action={setProjectStatusAction} className="flex items-center gap-2">
+        <ServerForm action={setProjectStatusAction} className="flex items-center gap-2">
           <input type="hidden" name="projectId" value={project.id} />
           <select name="status" defaultValue={project.status} className="rounded-2xl border border-line bg-cream px-3 py-2 text-sm">
             {PROJECT_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
           <button type="submit" className="rounded-2xl border border-line bg-surface px-4 py-2 text-sm hover:border-accent">Cambiar estado</button>
-        </form>
+        </ServerForm>
       )}
 
       {project.squads.map((squad) => {
@@ -58,11 +59,11 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
                   </Link>
                   <span className="font-mono text-xs text-muted">{m.roleInSquad ?? m.position ?? ""} · {m.allocationPct}%</span>
                   {canSquad && (
-                    <form action={removeMemberAction} className="ml-auto">
+                    <ServerForm action={removeMemberAction} className="ml-auto">
                       <input type="hidden" name="squadId" value={squad.id} />
                       <input type="hidden" name="personId" value={m.personId} />
                       <button type="submit" className="text-xs text-danger hover:underline">Quitar</button>
-                    </form>
+                    </ServerForm>
                   )}
                 </li>
               ))}
@@ -70,7 +71,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
             </ul>
 
             {canSquad && (
-              <form action={addMemberAction} className="grid gap-2 md:grid-cols-5">
+              <ServerForm action={addMemberAction} className="grid gap-2 md:grid-cols-5">
                 <input type="hidden" name="squadId" value={squad.id} />
                 <select name="personId" required className="rounded-2xl border border-line bg-cream px-3 py-2 text-sm md:col-span-2">
                   <option value="">Elegir persona confirmada</option>
@@ -81,18 +82,18 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
                 <input name="roleInSquad" placeholder="Rol en el squad" className="rounded-2xl border border-line bg-cream px-3 py-2 text-sm" />
                 <input name="allocationPct" type="number" min={1} max={100} defaultValue={100} className="rounded-2xl border border-line bg-cream px-3 py-2 text-sm" />
                 <button type="submit" className="rounded-2xl bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover">Sumar</button>
-              </form>
+              </ServerForm>
             )}
           </section>
         );
       })}
 
       {canSquad && (
-        <form action={createSquadAction} className="flex gap-2">
+        <ServerForm action={createSquadAction} className="flex gap-2">
           <input type="hidden" name="projectId" value={project.id} />
           <input name="name" required placeholder="Nombre del nuevo squad" className="rounded-2xl border border-line bg-cream px-4 py-2.5 text-sm" />
           <button type="submit" className="rounded-2xl bg-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-hover">Crear squad</button>
-        </form>
+        </ServerForm>
       )}
     </article>
   );

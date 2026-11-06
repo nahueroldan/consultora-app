@@ -1,24 +1,11 @@
+import { MobileNav, SidebarNav } from "@/components/nav";
+import { UserMenu } from "@/components/user-menu";
 import { signOut } from "@/auth";
-import { MobileNav, SidebarNav, type NavItem } from "@/components/nav";
-import { SubmitButton } from "@/components/ui/button";
 
-const MAIN_NAV: NavItem[] = [
-  { href: "/", label: "Inicio" },
-  { href: "/propuestas", label: "Propuestas" },
-  { href: "/ideas", label: "Ideas" },
-  { href: "/proyectos", label: "Proyectos" },
-  { href: "/directorio", label: "Directorio" },
-];
-
-const ADMIN_NAV: NavItem[] = [{ href: "/usuarios", label: "Usuarios" }];
-
-// En móvil la barra inferior muestra los cuatro accesos que más se usan.
-const MOBILE_NAV: NavItem[] = [
-  { href: "/", label: "Inicio" },
-  { href: "/propuestas", label: "Propuestas" },
-  { href: "/ideas", label: "Ideas" },
-  { href: "/directorio", label: "Directorio" },
-];
+async function signOutAction() {
+  "use server";
+  await signOut({ redirectTo: "/login" });
+}
 
 export function AppShell({
   children,
@@ -31,38 +18,22 @@ export function AppShell({
   role: string | null;
   isAdmin: boolean;
 }) {
-  const sidebarItems = isAdmin ? [...MAIN_NAV, ...ADMIN_NAV] : MAIN_NAV;
   return (
     <div className="flex min-h-screen">
-      <SidebarNav items={sidebarItems} />
+      <SidebarNav />
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between gap-4 border-b border-line bg-surface px-4 py-3 md:px-8">
-          <p className="text-lg font-semibold text-accent md:hidden">Consultora</p>
-          <div className="ml-auto flex items-center gap-3 text-sm">
-            <div className="hidden text-right md:block">
-              <p className="font-medium">{email}</p>
-              <p className="text-xs text-muted">{role ?? "sin rol"}</p>
-            </div>
-            <form
-              action={async () => {
-                "use server";
-                await signOut({ redirectTo: "/login" });
-              }}
-            >
-              <SubmitButton variant="secondary" pendingLabel="Saliendo…" className="min-h-9 px-3">
-                Salir
-              </SubmitButton>
-            </form>
+        <header className="sticky top-0 z-20 flex items-center justify-between gap-4 bg-cream/80 px-4 py-3 backdrop-blur md:px-8">
+          <p className="font-display text-lg text-accent md:hidden">Consultora</p>
+          <div className="ml-auto">
+            <UserMenu email={email} role={role} isAdmin={isAdmin} signOutAction={signOutAction} />
           </div>
         </header>
 
-        <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-24 pt-6 md:px-8 md:pb-10">
-          {children}
-        </main>
+        <main className="mx-auto w-full max-w-5xl flex-1 px-4 pb-32 pt-4 md:px-8 md:pb-12">{children}</main>
       </div>
 
-      <MobileNav items={MOBILE_NAV} />
+      <MobileNav />
     </div>
   );
 }

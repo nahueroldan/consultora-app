@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# consultora-app
 
-## Getting Started
+Portal interno de la consultora: directorio de colaboradores, armado de squads y generación de propuestas.
 
-First, run the development server:
+## Stack
+
+- Next.js (App Router) + TypeScript + Tailwind
+- PostgreSQL con Drizzle ORM
+- Zod para validación
+- Vitest para tests
+- GitHub Actions para CI
+
+## Puesta en marcha
 
 ```bash
+npm install
+cp .env.example .env.local   # completar DATABASE_URL
+npm run db:migrate
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Importar colaboradores
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run import:colaboradores -- /ruta/colaboradores.json
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Las personas entran con estado `pending`. Solo las confirmadas (`confirmed`) aparecen en squads y propuestas.
+El archivo con datos personales no va al repo: la carpeta `data/` está en `.gitignore`.
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Comando | Qué hace |
+| --- | --- |
+| `npm run dev` | Servidor de desarrollo |
+| `npm test` | Tests unitarios |
+| `npm run lint` | ESLint |
+| `npm run build` | Build de producción |
+| `npm run db:generate` | Genera migración desde el esquema |
+| `npm run db:migrate` | Aplica migraciones |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Flujo de trabajo
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+GitHub Flow: rama por feature, PR hacia `main`, CI en verde antes de mergear.

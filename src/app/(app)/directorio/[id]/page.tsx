@@ -24,11 +24,11 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <article className="space-y-6">
-      <Link href="/directorio" className="text-sm text-zinc-500 hover:underline">← Volver al directorio</Link>
+      <Link href="/directorio" className="text-sm text-muted hover:text-accent">← Volver al directorio</Link>
       <header>
-        <h1 className="text-2xl font-semibold">{person.firstName} {person.lastName}</h1>
-        <p className="text-zinc-600">{person.position ?? "Sin puesto"} · {person.area ?? "Sin área"}</p>
-        <p className="text-sm text-zinc-500">
+        <h1 className="font-display text-3xl tracking-tight">{person.firstName} {person.lastName}</h1>
+        <p className="text-muted">{person.position ?? "Sin puesto"} · {person.area ?? "Sin área"}</p>
+        <p className="text-sm text-muted">
           {[person.city, person.country].filter(Boolean).join(", ") || "Sin ubicación"}
           {person.linkedin && (
             <> · <a href={person.linkedin} className="underline" target="_blank" rel="noreferrer">LinkedIn</a></>
@@ -47,23 +47,23 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
             await confirmProfile(personId);
           }}
         >
-          <button type="submit" className="rounded-md bg-zinc-900 px-4 py-2 text-white">
+          <button type="submit" className="rounded-2xl bg-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-accent-hover">
             Confirmar mi perfil
           </button>
-          <p className="mt-2 text-xs text-zinc-500">
+          <p className="mt-2 text-xs text-muted">
             Al confirmar aceptás aparecer en squads y propuestas de la consultora.
           </p>
         </form>
       )}
 
-      <section>
-        <h2 className="mb-2 font-semibold">Skills</h2>
+      <section className="rounded-3xl border border-line bg-surface p-5 shadow-sm">
+        <h2 className="mb-3 font-display text-lg">Skills</h2>
         {person.skills.length === 0 ? (
-          <p className="text-sm text-zinc-500">Sin skills cargadas.</p>
+          <p className="text-sm text-muted">Sin skills cargadas.</p>
         ) : (
           <ul className="flex flex-wrap gap-2">
             {person.skills.map((s) => (
-              <li key={s.name} className="rounded-full border px-3 py-1 text-sm">{s.name}</li>
+              <li key={s.name} className="rounded-full bg-accent-soft px-3 py-1 text-sm text-accent">{s.name}</li>
             ))}
           </ul>
         )}
@@ -74,7 +74,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
 
 export default function PersonPage({ params }: { params: Promise<{ id: string }> }) {
   return (
-    <Suspense fallback={<p className="text-sm text-zinc-400">Cargando…</p>}>
+    <Suspense fallback={<p className="text-sm text-muted">Cargando…</p>}>
       <Content params={params} />
     </Suspense>
   );

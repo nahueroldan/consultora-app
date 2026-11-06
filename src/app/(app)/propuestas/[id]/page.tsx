@@ -22,27 +22,27 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <article className="space-y-6">
-      <Link href="/propuestas" className="text-sm text-zinc-500 hover:underline">← Propuestas</Link>
+      <Link href="/propuestas" className="text-sm text-muted hover:text-accent">← Propuestas</Link>
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-semibold">{proposal.title}</h1>
-          <p className="text-zinc-600">{proposal.projectName} · {proposal.client ?? "Sin cliente"}</p>
+          <h1 className="font-display text-3xl tracking-tight">{proposal.title}</h1>
+          <p className="text-muted">{proposal.projectName} · {proposal.client ?? "Sin cliente"}</p>
         </div>
         <a
           href={`/api/propuestas/${proposal.id}/pdf`}
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm text-white"
+          className="rounded-2xl bg-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-accent-hover"
         >
           Descargar PDF
         </a>
       </header>
 
-      <table className="w-full text-left text-sm">
-        <thead className="border-b text-zinc-500">
+      <div className="overflow-x-auto rounded-3xl border border-line bg-surface p-2 shadow-sm"><table className="w-full text-left text-sm">
+        <thead className="border-b border-line font-mono text-xs text-muted">
           <tr><th className="py-2">Rol</th><th>Horas</th><th>Tarifa/h</th><th className="text-right">Subtotal</th></tr>
         </thead>
         <tbody>
           {proposal.items.map((i, idx) => (
-            <tr key={idx} className="border-b">
+            <tr key={idx} className="border-b border-line last:border-0">
               <td className="py-2">{i.role}</td>
               <td>{i.hours}</td>
               <td>{money(i.hourlyRate)}</td>
@@ -50,23 +50,23 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
             </tr>
           ))}
         </tbody>
-      </table>
+      </table></div>
 
-      <dl className="ml-auto grid w-fit grid-cols-2 gap-x-8 gap-y-1 text-sm">
-        <dt className="text-zinc-500">Horas totales</dt><dd className="text-right">{totals.totalHours}</dd>
-        <dt className="text-zinc-500">Subtotal</dt><dd className="text-right">{money(totals.subtotal)}</dd>
+      <dl className="ml-auto grid w-full max-w-sm grid-cols-2 gap-x-8 gap-y-2 rounded-3xl border border-line bg-surface p-5 text-sm shadow-sm">
+        <dt className="text-muted">Horas totales</dt><dd className="text-right">{totals.totalHours}</dd>
+        <dt className="text-muted">Subtotal</dt><dd className="text-right">{money(totals.subtotal)}</dd>
         {proposal.discountPct > 0 && (
           <>
-            <dt className="text-zinc-500">Descuento ({proposal.discountPct}%)</dt>
+            <dt className="text-muted">Descuento ({proposal.discountPct}%)</dt>
             <dd className="text-right">- {money(totals.discount)}</dd>
           </>
         )}
-        <dt className="font-semibold">Total</dt><dd className="text-right font-semibold">{money(totals.total)}</dd>
+        <dt className="font-semibold">Total</dt><dd className="text-right font-display text-lg text-accent">{money(totals.total)}</dd>
       </dl>
 
       {proposal.notes && (
-        <section>
-          <h2 className="font-semibold">Notas</h2>
+        <section className="rounded-3xl border border-line bg-surface p-5 shadow-sm">
+          <h2 className="font-display text-lg">Notas</h2>
           <p className="whitespace-pre-line text-sm">{proposal.notes}</p>
         </section>
       )}
@@ -76,7 +76,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
 
 export default function PropuestaPage({ params }: { params: Promise<{ id: string }> }) {
   return (
-    <Suspense fallback={<p className="text-sm text-zinc-400">Cargando…</p>}>
+    <Suspense fallback={<p className="text-sm text-muted">Cargando…</p>}>
       <Content params={params} />
     </Suspense>
   );

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, FileText, FolderKanban, Lightbulb, Plus, Users } from "lucide-react";
 import { IconLink } from "@/components/ui/icon-link";
+import { Tooltip } from "@/components/ui/tooltip";
 import { VoteButton } from "@/components/ideas/vote-button";
 import { IdeaStatusBadge } from "@/components/ideas/status-badge";
 import { WidgetCard } from "@/components/home/widget-card";
@@ -126,12 +127,18 @@ export function QuickAccessWidget() {
   ];
   return (
     <WidgetCard id="accesos" title="Accesos rápidos">
-      <ul className="grid grid-cols-2 gap-2">
+      <ul className="grid grid-cols-4 gap-3">
         {items.map(({ href, label, Icon }) => (
-          <li key={href}>
-            <Link href={href} className="flex items-center gap-2 rounded-2xl border border-line bg-cream px-3 py-3 text-sm font-medium hover:border-accent">
-              <Icon size={16} aria-hidden className="text-accent" /> {label}
-            </Link>
+          <li key={href} className="flex justify-center">
+            <Tooltip label={label}>
+              <Link
+                href={href}
+                aria-label={label}
+                className="flex size-16 items-center justify-center rounded-3xl bg-accent-soft text-accent transition hover:-translate-y-0.5 hover:shadow-md focus-visible:outline-2 focus-visible:outline-accent"
+              >
+                <Icon size={28} aria-hidden />
+              </Link>
+            </Tooltip>
           </li>
         ))}
       </ul>

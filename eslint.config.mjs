@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Código copiado de motion-primitives (MIT): se mantiene tal cual, sin lint.
+    "src/components/motion-primitives/**",
   ]),
 ]);
 

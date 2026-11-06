@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FileText, FolderKanban, House, Lightbulb, Users, type LucideIcon } from "lucide-react";
+import { AnimatedBackground } from "@/components/motion-primitives/animated-background";
 
 type NavDef = { href: string; label: string; Icon: LucideIcon };
 
@@ -22,31 +23,40 @@ export function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-/** Barra inferior en móvil. */
+/** Barra inferior en móvil. El resalte se desliza entre secciones. */
 export function MobileNav() {
   const pathname = usePathname();
+  const active = MOBILE.find((m) => isActive(pathname, m.href))?.href ?? "";
   return (
     <nav
       aria-label="Principal"
-      className="fixed inset-x-3 bottom-3 z-30 grid rounded-3xl border border-line bg-surface/95 p-1.5 shadow-lg backdrop-blur md:hidden"
+      className="glass fixed inset-x-3 bottom-3 z-30 grid rounded-3xl border border-line p-1.5 shadow-lg md:hidden"
       style={{ gridTemplateColumns: `repeat(${MOBILE.length}, minmax(0, 1fr))` }}
     >
-      {MOBILE.map(({ href, label, Icon }) => {
-        const active = isActive(pathname, href);
-        return (
+      {/* key por ruta: el resalte arranca en la sección actual en cada navegación */}
+      <AnimatedBackground
+        key={pathname}
+        defaultValue={active}
+        className="rounded-2xl bg-accent-soft"
+        transition={{ type: "spring", bounce: 0.2, duration: 0.45 }}
+      >
+        {MOBILE.map(({ href, label, Icon }) => (
           <Link
             key={href}
             href={href}
-            aria-current={active ? "page" : undefined}
-            className={`flex min-h-12 flex-col items-center justify-center gap-0.5 rounded-2xl text-[11px] font-medium transition ${
-              active ? "bg-accent-soft text-accent" : "text-muted"
+            data-id={href}
+            aria-current={active === href ? "page" : undefined}
+            className={`relative flex min-h-12 items-center justify-center rounded-2xl text-[11px] font-medium transition ${
+              active === href ? "text-accent" : "text-muted"
             }`}
           >
-            <Icon size={18} aria-hidden />
-            {label}
+            <span className="flex flex-col items-center gap-0.5">
+              <Icon size={18} aria-hidden />
+              {label}
+            </span>
           </Link>
-        );
-      })}
+        ))}
+      </AnimatedBackground>
     </nav>
   );
 }

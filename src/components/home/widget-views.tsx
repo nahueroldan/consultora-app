@@ -4,6 +4,7 @@ import { IconLink } from "@/components/ui/icon-link";
 import { VoteButton } from "@/components/ideas/vote-button";
 import { IdeaStatusBadge } from "@/components/ideas/status-badge";
 import { WidgetCard } from "@/components/home/widget-card";
+import { AnimatedNumber } from "@/components/motion-primitives/animated-number";
 import { EmptyState } from "@/components/ui/empty-state";
 import { voteIdeaAction } from "@/app/(app)/ideas/actions";
 import { IDEA_STATUSES, IDEA_STATUS_LABEL, countIdeasByStatus, listIdeas, listTopIdeas } from "@/lib/data/ideas";
@@ -65,7 +66,7 @@ export async function IdeasByStatusWidget() {
         {IDEA_STATUSES.map((s) => (
           <li key={s}>
             <Link href={`/ideas?estado=${s}`} className="block rounded-2xl bg-cream p-3 hover:bg-accent-soft">
-              <p className="font-mono text-2xl">{counts[s]}</p>
+              <AnimatedNumber value={counts[s]} className="block font-mono text-2xl" />
               <p className="text-xs text-muted">{IDEA_STATUS_LABEL[s]}</p>
             </Link>
           </li>
@@ -106,7 +107,7 @@ export async function ProjectsWidget() {
   return (
     <WidgetCard id="proyectos-activos" title="Proyectos activos">
       <Link href="/proyectos" className="flex items-center justify-between rounded-2xl bg-cream p-4 hover:bg-accent-soft">
-        <span className="font-mono text-3xl">{activos}</span>
+        <AnimatedNumber value={activos} className="font-mono text-3xl" />
         <FolderKanban size={22} aria-hidden className="text-accent" />
       </Link>
     </WidgetCard>

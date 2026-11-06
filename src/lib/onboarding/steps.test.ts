@@ -20,6 +20,13 @@ describe("tourStepsFor", () => {
   it("sin rol ve solo los generales", () => {
     expect(tourStepsFor(null).every((s) => !s.roles)).toBe(true);
   });
+  it("cada paso tiene una ruta válida", () => {
+    expect(TOUR_STEPS.every((s) => s.href.startsWith("/"))).toBe(true);
+  });
+  it("los destinos de foco son únicos", () => {
+    const targets = TOUR_STEPS.map((s) => s.target).filter(Boolean);
+    expect(new Set(targets).size).toBe(targets.length);
+  });
   it("los ids son únicos", () => {
     const ids = TOUR_STEPS.map((s) => s.id);
     expect(new Set(ids).size).toBe(ids.length);

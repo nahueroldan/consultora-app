@@ -17,7 +17,7 @@ async function Content() {
   ]);
 
   return (
-    <section className="space-y-6">
+    <section data-tour="directorio" className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="font-display text-3xl tracking-tight">Directorio</h1>

@@ -31,11 +31,13 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
           <p className="text-sm text-muted">Armá el equipo por roles y descargá el PDF para el cliente.</p>
         </div>
         {canCreate && (
+          <div data-tour="propuestas">
           <ProposalWizard
             projects={projects}
             action={createProposalAction}
             initialIdea={idea ? { id: idea.id, title: idea.title } : null}
           />
+          </div>
         )}
       </div>
 

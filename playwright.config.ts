@@ -9,10 +9,15 @@ export default defineConfig({
   fullyParallel: false,
   workers: 1,
   retries: 0,
+  // El servidor de desarrollo compila cada ruta la primera vez: damos margen.
+  timeout: 90_000,
+  expect: { timeout: 20_000 },
   reporter: [["list"]],
   use: {
     baseURL: `http://localhost:${PORT}`,
     trace: "retain-on-failure",
+    actionTimeout: 15_000,
+    navigationTimeout: 45_000,
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {

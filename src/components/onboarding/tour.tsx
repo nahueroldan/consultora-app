@@ -1,10 +1,9 @@
 "use client";
 
-import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { ArrowLeft, ArrowRight, Check, FolderKanban, Home, Lightbulb, Settings, Shield, FileText, LayoutGrid, Users, type LucideIcon } from "lucide-react";
-import { Modal } from "@/components/ui/modal";
-import { buttonBase } from "@/components/ui/button";
+import { ArrowLeft, ArrowRight, Check, FileText, FolderKanban, Home, LayoutGrid, Lightbulb, Settings, Shield, Users, type LucideIcon } from "lucide-react";
 import type { TourIcon, TourStep } from "@/lib/onboarding/steps";
 import type { ActionResult } from "@/lib/form-result";
 
@@ -19,10 +18,14 @@ const ICONS: Record<TourIcon, LucideIcon> = {
   shield: Shield,
 };
 
+const CARD_WIDTH = 340;
+const CARD_GAP = 16;
+const PAD = 8;
+
 type TourContextValue = { openTour: () => void };
 const TourContext = createContext<TourContextValue>({ openTour: () => {} });
 
-/** Permite a cualquier parte de la app (por ejemplo, el menú) abrir el recorrido otra vez. */
+/** Permite abrir el recorrido desde cualquier parte de la app (por ejemplo, el menú). */
 export function useTour() {
   return useContext(TourContext);
 }
@@ -34,101 +37,230 @@ export function TourProvider({
   children,
 }: {
   steps: TourStep[];
-  /** Se abre solo si el usuario todavía no cerró el recorrido. */
   autoOpen: boolean;
   closeAction: () => Promise<ActionResult>;
   children: ReactNode;
 }) {
-  const [open, setOpen] = useState(autoOpen);
+  const [active, setActive] = useState(autoOpen);
   const [index, setIndex] = useState(0);
 
   const openTour = useCallback(() => {
     setIndex(0);
-    setOpen(true);
+    setActive(true);
   }, []);
 
-  // Cerrar (terminar u omitir) marca el recorrido como visto: no vuelve a abrirse solo.
+  // Terminar u omitir marca el recorrido como visto: no vuelve a abrirse solo.
   const close = useCallback(() => {
-    setOpen(false);
+    setActive(false);
     void closeAction();
   }, [closeAction]);
 
   return (
     <TourContext.Provider value={{ openTour }}>
       {children}
-      <Modal open={open} onClose={close} title="Recorrido" description={`Paso ${index + 1} de ${steps.length}`} size="md">
-        <TourBody steps={steps} index={index} setIndex={setIndex} onFinish={close} />
-      </Modal>
+      {active && steps.length > 0 && (
+        <Spotlight key={index} steps={steps} index={index} setIndex={setIndex} onClose={close} />
+      )}
     </TourContext.Provider>
   );
 }
 
-function TourBody({
+type Box = { top: number; left: number; width: number; height: number };
+
+function measure(target: string | undefined): Box | null {
+  if (!target) return null;
+  const el = document.querySelector<HTMLElement>(`[data-tour="${target}"]`);
+  if (!el) return null;
+  const r = el.getBoundingClientRect();
+  if (r.width === 0 && r.height === 0) return null;
+  return { top: r.top, left: r.left, width: r.width, height: r.height };
+}
+
+function Spotlight({
   steps,
   index,
   setIndex,
-  onFinish,
+  onClose,
 }: {
   steps: TourStep[];
   index: number;
   setIndex: (i: number) => void;
-  onFinish: () => void;
+  onClose: () => void;
 }) {
+  const router = useRouter();
+  const pathname = usePathname();
   const reduce = useReducedMotion();
   const step = steps[index];
-  const Icon = ICONS[step.icon];
+  const [box, setBox] = useState<Box | null>(null);
+  const [searching, setSearching] = useState(true);
+  const cardRef = useRef<HTMLDivElement>(null);
+  const nextRef = useRef<HTMLButtonElement>(null);
+
+  // Navega a la página del paso y espera a que el elemento exista.
+  useEffect(() => {
+    let cancelled = false;
+    let tries = 0;
+
+    const tick = () => {
+      if (cancelled) return;
+      const found = measure(step.target);
+      if (found || !step.target || tries > 30) {
+        if (found) {
+          const el = document.querySelector<HTMLElement>(`[data-tour="${step.target}"]`);
+          el?.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+        }
+        setBox(found ? measure(step.target) : null);
+        setSearching(false);
+        return;
+      }
+      tries++;
+      setTimeout(tick, 100);
+    };
+    const first = setTimeout(tick, 150);
+    return () => {
+      cancelled = true;
+      clearTimeout(first);
+    };
+    // El paso define qué buscar; reduce no cambia el destino.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step.target]);
+
+  // Recalcula la posición al cambiar la ventana o al desplazar.
+  useEffect(() => {
+    const update = () => setBox(measure(step.target));
+    window.addEventListener("resize", update);
+    window.addEventListener("scroll", update, true);
+    return () => {
+      window.removeEventListener("resize", update);
+      window.removeEventListener("scroll", update, true);
+    };
+  }, [step.target]);
+
+  // Navega a la sección del paso solo cuando el usuario avanza o retrocede.
+  const goTo = useCallback(
+    (i: number) => {
+      const target = steps[i];
+      if (target.href !== pathname) router.push(target.href);
+      setIndex(i);
+    },
+    [steps, pathname, router, setIndex],
+  );
+
+  // Escape cierra; las flechas avanzan y retroceden.
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+      if (e.key === "ArrowRight" && index < steps.length - 1) goTo(index + 1);
+      if (e.key === "ArrowLeft" && index > 0) goTo(index - 1);
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [index, steps.length, goTo, onClose]);
+
+  // Lleva el foco al botón principal para que el teclado siga el recorrido.
+  useEffect(() => {
+    if (!searching) nextRef.current?.focus();
+  }, [searching, index]);
+
   const last = index === steps.length - 1;
+  const Icon = ICONS[step.icon];
+  const hasBox = box !== null && !searching;
+
+  const cardStyle = placeCard(hasBox ? box : null);
 
   return (
-    <div className="flex h-full flex-col gap-6">
-      <div className="flex gap-1.5" aria-hidden>
-        {steps.map((s, i) => (
-          <span key={s.id} className={`h-1.5 flex-1 rounded-full ${i <= index ? "bg-accent" : "bg-line"}`} />
-        ))}
-      </div>
+    <div className="fixed inset-0 z-50" role="dialog" aria-modal="false" aria-label="Recorrido de la app">
+      {hasBox ? (
+        <div
+          aria-hidden
+          className="pointer-events-none fixed rounded-2xl transition-all duration-300"
+          style={{
+            top: box.top - PAD,
+            left: box.left - PAD,
+            width: box.width + PAD * 2,
+            height: box.height + PAD * 2,
+            boxShadow: "0 0 0 9999px rgb(9 9 11 / 0.6)",
+            outline: "2px solid var(--accent)",
+          }}
+        />
+      ) : (
+        <div aria-hidden className="pointer-events-none fixed inset-0 bg-ink/60" />
+      )}
 
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div
-          key={step.id}
-          initial={reduce ? false : { opacity: 0, x: 12 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={reduce ? undefined : { opacity: 0, x: -12 }}
-          transition={{ duration: 0.2 }}
-          className="flex flex-1 flex-col items-start gap-4"
-        >
-          <span className="flex size-14 items-center justify-center rounded-3xl bg-accent-soft text-accent">
-            <Icon size={26} aria-hidden />
-          </span>
-          <h3 className="font-display text-2xl">{step.title}</h3>
-          <p className="leading-relaxed text-muted">{step.body}</p>
-        </motion.div>
-      </AnimatePresence>
+      <div
+        ref={cardRef}
+        style={cardStyle}
+        className="fixed z-10 w-[min(340px,calc(100vw-2rem))] rounded-3xl border border-line bg-surface p-5 shadow-2xl"
+      >
+        <div className="mb-4 flex gap-1.5" aria-hidden>
+          {steps.map((s, i) => (
+            <span key={s.id} className={`h-1 flex-1 rounded-full ${i <= index ? "bg-accent" : "bg-line"}`} />
+          ))}
+        </div>
 
-      <div className="flex items-center justify-between gap-3 border-t border-line pt-4">
-        <button type="button" onClick={onFinish} className="text-sm text-muted hover:text-ink">
-          Omitir
-        </button>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setIndex(Math.max(0, index - 1))}
-            disabled={index === 0}
-            aria-label="Paso anterior"
-            className={`${buttonBase} border border-line bg-surface px-3 disabled:opacity-40`}
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div
+            key={step.id}
+            initial={reduce ? false : { opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={reduce ? undefined : { opacity: 0, y: -6 }}
+            transition={{ duration: 0.2 }}
+            className="space-y-2"
           >
-            <ArrowLeft size={16} aria-hidden />
+            <span className="flex size-10 items-center justify-center rounded-2xl bg-accent-soft text-accent">
+              <Icon size={20} aria-hidden />
+            </span>
+            <h3 className="font-display text-xl">{step.title}</h3>
+            <p className="text-sm leading-relaxed text-muted">{step.body}</p>
+          </motion.div>
+        </AnimatePresence>
+
+        <div className="mt-5 flex items-center justify-between gap-3 border-t border-line pt-4">
+          <button type="button" onClick={onClose} className="text-sm text-muted hover:text-ink">
+            Omitir
           </button>
-          {last ? (
-            <button type="button" onClick={onFinish} className={`${buttonBase} bg-accent text-on-accent hover:bg-accent-hover`}>
-              <Check size={16} aria-hidden /> Terminar
+          <div className="flex items-center gap-2">
+            <span className="mr-1 font-mono text-xs text-muted">
+              {index + 1}/{steps.length}
+            </span>
+            <button
+              type="button"
+              onClick={() => goTo(Math.max(0, index - 1))}
+              disabled={index === 0}
+              aria-label="Paso anterior"
+              className="inline-flex size-9 items-center justify-center rounded-2xl border border-line bg-surface disabled:opacity-40"
+            >
+              <ArrowLeft size={16} aria-hidden />
             </button>
-          ) : (
-            <button type="button" onClick={() => setIndex(index + 1)} className={`${buttonBase} bg-accent text-on-accent hover:bg-accent-hover`}>
-              Siguiente <ArrowRight size={16} aria-hidden />
-            </button>
-          )}
+            {last ? (
+              <button ref={nextRef} type="button" onClick={onClose} className="inline-flex min-h-9 items-center gap-2 rounded-2xl bg-accent px-4 text-sm font-medium text-on-accent hover:bg-accent-hover">
+                <Check size={16} aria-hidden /> Terminar
+              </button>
+            ) : (
+              <button ref={nextRef} type="button" onClick={() => goTo(index + 1)} className="inline-flex min-h-9 items-center gap-2 rounded-2xl bg-accent px-4 text-sm font-medium text-on-accent hover:bg-accent-hover">
+                Siguiente <ArrowRight size={16} aria-hidden />
+              </button>
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
+}
+
+/** Ubica el globo debajo del elemento, o encima si no hay lugar; sin elemento, centrado. */
+function placeCard(box: Box | null): React.CSSProperties {
+  if (typeof window === "undefined" || !box) {
+    return { top: "50%", left: "50%", transform: "translate(-50%, -50%)" };
+  }
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const estimatedHeight = 230;
+  const width = Math.min(CARD_WIDTH, vw - 32);
+  const left = Math.min(Math.max(16, box.left), vw - width - 16);
+  const spaceBelow = vh - (box.top + box.height);
+  if (spaceBelow > estimatedHeight + CARD_GAP) {
+    return { top: box.top + box.height + CARD_GAP, left };
+  }
+  return { top: Math.max(16, box.top - estimatedHeight - CARD_GAP), left };
 }

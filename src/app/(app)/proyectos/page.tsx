@@ -30,6 +30,7 @@ async function Content() {
           <p className="text-sm text-muted">Cada proyecto tiene sus squads y sus propuestas.</p>
         </div>
         {canEdit && (
+          <div data-tour="proyectos">
           <Dialog action={createProjectAction} triggerLabel="Nuevo proyecto" title="Nuevo proyecto" description="Solo el nombre es obligatorio.">
             
                 <label className="block space-y-1 text-sm font-medium">
@@ -53,6 +54,7 @@ async function Content() {
                 <SubmitButton pendingLabel="Creando proyecto…" className="w-full">Crear proyecto</SubmitButton>
               
           </Dialog>
+          </div>
         )}
       </div>
 

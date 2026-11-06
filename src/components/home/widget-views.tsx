@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { FileText, FolderKanban, Lightbulb, Users } from "lucide-react";
+import { ArrowUpRight, FileText, FolderKanban, Lightbulb, Users } from "lucide-react";
+import { IconLink } from "@/components/ui/icon-link";
 import { VoteButton } from "@/components/ideas/vote-button";
 import { IdeaStatusBadge } from "@/components/ideas/status-badge";
 import { WidgetCard } from "@/components/home/widget-card";
@@ -12,12 +13,11 @@ import type { WidgetConfig } from "@/lib/home/widgets";
 
 type Props = { widget: WidgetConfig; userEmail: string };
 
-const linkClass = "text-sm font-medium text-accent hover:underline";
 
 export async function IdeasTopWidget({ widget, userEmail }: Props) {
   const ideas = await listTopIdeas({ userEmail, source: widget.source, limit: widget.count });
   return (
-    <WidgetCard id="ideas-top" title="Ideas más votadas" action={<Link href="/ideas" className={linkClass}>Ver todas</Link>}>
+    <WidgetCard id="ideas-top" title="Ideas más votadas" action={<IconLink href="/ideas" label="Ver todas las ideas" Icon={ArrowUpRight} />}>
       {ideas.length === 0 ? (
         <EmptyState title="Sin ideas para mostrar" />
       ) : (
@@ -37,7 +37,7 @@ export async function IdeasTopWidget({ widget, userEmail }: Props) {
 export async function IdeasMineWidget({ widget, userEmail }: Props) {
   const ideas = (await listIdeas({ userEmail, onlyMine: true, limit: widget.count }));
   return (
-    <WidgetCard id="ideas-mias" title="Mis ideas" action={<Link href="/ideas" className={linkClass}>Ver todas</Link>}>
+    <WidgetCard id="ideas-mias" title="Mis ideas" action={<IconLink href="/ideas" label="Ver todas las ideas" Icon={ArrowUpRight} />}>
       {ideas.length === 0 ? (
         <EmptyState title="Todavía no cargaste ideas" actionHref="/ideas" actionLabel="Ir a ideas" />
       ) : (
@@ -78,7 +78,7 @@ export async function IdeasByStatusWidget() {
 export async function ProposalsWidget({ widget }: Props) {
   const proposals = (await listProposals()).slice(0, widget.count);
   return (
-    <WidgetCard id="propuestas-recientes" title="Propuestas recientes" action={<Link href="/propuestas" className={linkClass}>Ver todas</Link>}>
+    <WidgetCard id="propuestas-recientes" title="Propuestas recientes" action={<IconLink href="/propuestas" label="Ver todas las propuestas" Icon={ArrowUpRight} />}>
       {proposals.length === 0 ? (
         <EmptyState title="Todavía no hay propuestas" actionHref="/propuestas" actionLabel="Crear propuesta" />
       ) : (

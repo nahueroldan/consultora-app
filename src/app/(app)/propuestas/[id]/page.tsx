@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import { IconLink } from "@/components/ui/icon-link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { connection } from "next/server";
@@ -22,7 +23,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <article className="space-y-6">
-      <Link href="/propuestas" className="text-sm text-muted hover:text-accent">← Propuestas</Link>
+      <IconLink href="/propuestas" label="Volver a propuestas" Icon={ArrowLeft} />
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="font-display text-3xl tracking-tight">{proposal.title}</h1>

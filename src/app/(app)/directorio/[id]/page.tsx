@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import { IconLink } from "@/components/ui/icon-link";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
@@ -24,7 +25,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <article className="space-y-6">
-      <Link href="/directorio" className="text-sm text-muted hover:text-accent">← Volver al directorio</Link>
+      <IconLink href="/directorio" label="Volver al directorio" Icon={ArrowLeft} />
       <header>
         <h1 className="font-display text-3xl tracking-tight">{person.firstName} {person.lastName}</h1>
         <p className="text-muted">{person.position ?? "Sin puesto"} · {person.area ?? "Sin área"}</p>

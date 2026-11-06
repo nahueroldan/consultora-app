@@ -36,3 +36,17 @@ export async function createUser(rawEmail: string, role: Role) {
 export async function updateUser(id: number, role: Role, personId: number | null) {
   await db.update(schema.users).set({ role, personId }).where(eq(schema.users.id, id));
 }
+
+/** Estado del recorrido de primer ingreso para un usuario. */
+export async function getTourClosed(email: string): Promise<boolean> {
+  const [row] = await db
+    .select({ tourClosedAt: schema.users.tourClosedAt })
+    .from(schema.users)
+    .where(eq(schema.users.email, email))
+    .limit(1);
+  return row?.tourClosedAt != null;
+}
+
+export async function markTourClosed(email: string) {
+  await db.update(schema.users).set({ tourClosedAt: new Date() }).where(eq(schema.users.email, email));
+}

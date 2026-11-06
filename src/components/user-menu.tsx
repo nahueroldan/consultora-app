@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { LogOut, Settings, Users } from "lucide-react";
+import { CircleHelp, LogOut, Settings, Users } from "lucide-react";
+import { useTour } from "@/components/onboarding/tour";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 /**
@@ -21,6 +22,7 @@ export function UserMenu({
   signOutAction: () => Promise<void>;
 }) {
   const [open, setOpen] = useState(false);
+  const { openTour } = useTour();
   const wrapRef = useRef<HTMLDivElement>(null);
 
   // Cierra con Escape o clic afuera.
@@ -66,6 +68,17 @@ export function UserMenu({
           <ThemeToggle />
 
           <div className="space-y-1">
+            <button
+              role="menuitem"
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                openTour();
+              }}
+              className="flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-left text-sm hover:bg-cream"
+            >
+              <CircleHelp size={16} aria-hidden /> Ver recorrido de nuevo
+            </button>
             {isAdmin && (
               <Link
                 role="menuitem"

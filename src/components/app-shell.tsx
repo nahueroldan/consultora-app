@@ -1,5 +1,9 @@
 import Link from "next/link";
 import { MobileNav } from "@/components/nav";
+import { TourProvider } from "@/components/onboarding/tour";
+import { tourStepsFor } from "@/lib/onboarding/steps";
+import { closeTourAction } from "@/app/(app)/onboarding-actions";
+import type { Role } from "@/lib/auth/roles";
 import { UserMenu } from "@/components/user-menu";
 import { signOut } from "@/auth";
 
@@ -13,13 +17,17 @@ export function AppShell({
   email,
   role,
   isAdmin,
+  tourClosed,
 }: {
   children: React.ReactNode;
   email: string;
   role: string | null;
   isAdmin: boolean;
+  tourClosed: boolean;
 }) {
+  const steps = tourStepsFor(role as Role | null);
   return (
+    <TourProvider steps={steps} autoOpen={!tourClosed} closeAction={closeTourAction}>
     <div className="flex min-h-screen flex-col">
       {/* Barra superior: la marca lleva al inicio; a la derecha, configuración. */}
       <header className="sticky top-0 z-20 border-b border-line bg-cream/90 backdrop-blur">
@@ -37,5 +45,6 @@ export function AppShell({
 
       <MobileNav />
     </div>
+    </TourProvider>
   );
 }

@@ -9,4 +9,9 @@ export async function loginAs(page: Page, email: string, role: "admin" | "lider"
   });
   if (!res.ok()) throw new Error(`Login de prueba falló: ${res.status()}`);
   await page.goto("/");
+  // El recorrido se abre solo en el primer ingreso: lo omitimos para no tapar la app.
+  const skip = page.getByRole("button", { name: "Omitir" });
+  if (await skip.isVisible({ timeout: 3000 }).catch(() => false)) {
+    await skip.click();
+  }
 }

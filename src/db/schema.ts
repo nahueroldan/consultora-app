@@ -80,6 +80,8 @@ export const users = pgTable(
     name: text("name"),
     role: userRole("role").notNull().default("colaborador"),
     personId: integer("person_id").references(() => people.id, { onDelete: "set null" }),
+    /** Se marca al cerrar el recorrido (terminado u omitido): no vuelve a abrirse solo. */
+    tourClosedAt: timestamp("tour_closed_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [uniqueIndex("users_email_idx").on(t.email)],

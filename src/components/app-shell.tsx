@@ -24,9 +24,19 @@ export function AppShell({
       {/* Barra superior: la marca lleva al inicio; a la derecha, configuración. */}
       <header className="sticky top-0 z-20 border-b border-line bg-cream/90 backdrop-blur">
         <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-4 py-3 md:px-8">
-          <Link href="/" className="font-display text-xl text-ink">
-            Consultora
-          </Link>
+          <div className="flex min-w-0 items-center gap-6">
+            <Link href="/" className="font-display text-xl text-ink">
+              Consultora
+            </Link>
+          </div>
+          <nav aria-label="Secciones" className="hidden items-center gap-1 md:flex">
+            <Link href="/directorio" className="rounded-2xl px-3 py-2 text-sm font-medium text-muted transition hover:bg-surface hover:text-ink">
+              Directorio
+            </Link>
+            <Link href="/proyectos" className="rounded-2xl px-3 py-2 text-sm font-medium text-muted transition hover:bg-surface hover:text-ink">
+              Proyectos
+            </Link>
+          </nav>
           <UserMenu email={email} role={role} isAdmin={isAdmin} signOutAction={signOutAction} />
         </div>
       </header>

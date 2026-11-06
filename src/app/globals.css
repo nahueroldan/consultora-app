@@ -95,6 +95,18 @@ body {
   color: transparent;
 }
 
+/* Fondo con degradados suaves: sin algo detrás, el cristal no se ve. */
+.app-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 40rem at 10% -10%, var(--accent-soft), transparent 60%),
+    radial-gradient(50rem 36rem at 110% 20%, color-mix(in srgb, var(--accent-2) 35%, transparent), transparent 60%),
+    radial-gradient(56rem 40rem at 50% 120%, var(--accent-soft), transparent 60%);
+}
+
 /* Superficie translúcida con desenfoque. Lo usan la barra superior y la inferior. */
 .glass {
   background-color: rgb(var(--surface-rgb) / var(--glass-alpha));

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, FileText, FolderKanban } from "lucide-react";
 import { IconLink } from "@/components/ui/icon-link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -59,11 +59,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
             Crear propuesta desde esta idea
           </Link>
         )}
-        {project && (
-          <Link href={`/proyectos/${project.id}`} className={`${buttonBase} border border-line bg-surface text-ink`}>
-            Ver proyecto: {project.name}
-          </Link>
-        )}
+        {project && <IconLink href={`/proyectos/${project.id}`} label={`Ver proyecto: ${project.name}`} Icon={FolderKanban} />}
         {canPromote && (
           <ServerForm action={promoteIdeaToProjectAction}>
             <input type="hidden" name="ideaId" value={idea.id} />
@@ -71,9 +67,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
           </ServerForm>
         )}
         {idea.linkedProposals.map((p) => (
-          <Link key={p.id} href={`/propuestas/${p.id}`} className={`${buttonBase} border border-line bg-surface text-ink`}>
-            Ver propuesta: {p.title}
-          </Link>
+          <IconLink key={p.id} href={`/propuestas/${p.id}`} label={`Ver propuesta: ${p.title}`} Icon={FileText} />
         ))}
       </div>
 

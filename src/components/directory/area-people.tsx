@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Search } from "lucide-react";
 import { loadAreaPageAction } from "@/app/(app)/directorio/actions";
+import { Badge } from "@/components/ui/card";
 
 type Person = { id: number; firstName: string; lastName: string; position: string | null; status: string };
 
@@ -95,7 +96,7 @@ export function AreaPeople({ area }: { area: string }) {
                       <span className="block truncate text-xs text-muted">{person.position ?? "Sin puesto"}</span>
                     </span>
                     {person.status === "pending" && (
-                      <span className="shrink-0 rounded-full bg-warning-soft px-2 py-0.5 font-mono text-[11px] text-warning">pendiente</span>
+                      <span className="shrink-0"><Badge tone="warning">Pendiente</Badge></span>
                     )}
                   </Link>
                 ) : (

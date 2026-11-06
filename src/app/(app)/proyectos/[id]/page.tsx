@@ -13,13 +13,13 @@ import { requireUser } from "@/lib/auth/session";
 import { getProject, listConfirmedPeople, PROJECT_STATUSES } from "@/lib/data/projects";
 import { listInterests, myInterest } from "@/lib/data/interests";
 import { decideInterestAction, expressInterestAction } from "@/app/(app)/proyectos/interest-actions";
-const input = "w-full rounded-2xl border border-line bg-cream px-4 py-2.5 text-sm font-normal focus-visible:outline-2 focus-visible:outline-accent";
 import {
   addMemberAction,
   createSquadAction,
   removeMemberAction,
   setProjectStatusAction,
 } from "@/app/(app)/proyectos/actions";
+import { fieldClass as input } from "@/components/ui/field";
 
 async function Content({ params }: { params: Promise<{ id: string }> }) {
   await connection();

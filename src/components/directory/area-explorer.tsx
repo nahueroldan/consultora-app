@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Building2, ChevronRight } from "lucide-react";
 import { Modal } from "@/components/ui/modal";
+import { cardSurface } from "@/components/ui/card";
 import { AreaPeople } from "@/components/directory/area-people";
 
 export function AreaExplorer({ areas }: { areas: { area: string; count: number }[] }) {
@@ -16,7 +17,7 @@ export function AreaExplorer({ areas }: { areas: { area: string; count: number }
             <button
               type="button"
               onClick={() => setSelected(area)}
-              className="group flex h-full w-full items-center gap-4 rounded-3xl border border-line bg-surface p-5 text-left shadow-[0_1px_2px_rgb(0_0_0/0.04),0_8px_24px_-12px_rgb(0_0_0/0.12)] transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md focus-visible:outline-2 focus-visible:outline-accent"
+              className={`group flex h-full w-full items-center gap-4 p-5 text-left ${cardSurface} transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md focus-visible:outline-2 focus-visible:outline-accent`}
             >
               <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-accent-soft text-accent">
                 <Building2 size={22} aria-hidden />

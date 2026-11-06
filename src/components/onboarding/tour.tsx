@@ -104,7 +104,8 @@ function Spotlight({
     const tick = () => {
       if (cancelled) return;
       const found = measure(step.target);
-      if (found || !step.target || tries > 30) {
+      // Hasta ~8 s: la sección puede tardar en cargar sus datos antes de tener el elemento.
+      if (found || !step.target || tries > 80) {
         if (found) {
           const el = document.querySelector<HTMLElement>(`[data-tour="${step.target}"]`);
           el?.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
@@ -186,7 +187,7 @@ function Spotlight({
           }}
         />
       ) : (
-        <div aria-hidden className="pointer-events-none fixed inset-0 bg-ink/25 transition-colors duration-300" />
+        <div aria-hidden className="pointer-events-none fixed inset-0 bg-black/30 transition-colors duration-300" />
       )}
 
       <div
@@ -214,6 +215,12 @@ function Spotlight({
             </span>
             <h3 className="font-display text-xl">{step.title}</h3>
             <p className="text-sm leading-relaxed text-muted">{step.body}</p>
+            {searching && step.target && (
+              <p className="flex items-center gap-2 pt-1 text-xs text-muted" role="status">
+                <span aria-hidden className="size-3 animate-spin rounded-full border-2 border-current border-r-transparent" />
+                Abriendo la sección…
+              </p>
+            )}
           </motion.div>
         </AnimatePresence>
 

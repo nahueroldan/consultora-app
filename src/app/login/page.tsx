@@ -1,25 +1,25 @@
 import { signIn } from "@/auth";
+import { SubmitButton } from "@/components/ui/button";
 
 export default function LoginPage() {
   return (
-    <main className="flex min-h-screen items-center justify-center p-8">
-      <div className="w-full max-w-sm space-y-6 text-center">
-        <h1 className="text-2xl font-semibold">Consultora</h1>
-        <p className="text-sm text-zinc-500">
-          Ingresá con tu cuenta de Google. Si todavía no tenés acceso, pedíselo a un administrador.
-        </p>
+    <main className="flex min-h-screen items-center justify-center bg-cream p-6">
+      <div className="w-full max-w-sm space-y-6 rounded-2xl border border-line bg-surface p-8 text-center shadow-sm">
+        <div className="space-y-2">
+          <h1 className="text-2xl font-semibold tracking-tight text-accent">Consultora</h1>
+          <p className="text-sm text-muted">
+            Ingresá con tu cuenta de Google. Si todavía no tenés acceso, pedíselo a un administrador.
+          </p>
+        </div>
         <form
           action={async () => {
             "use server";
             await signIn("google", { redirectTo: "/" });
           }}
         >
-          <button
-            type="submit"
-            className="w-full rounded-md bg-zinc-900 px-4 py-2 text-white hover:bg-zinc-700"
-          >
+          <SubmitButton pendingLabel="Redirigiendo…" className="w-full">
             Ingresar con Google
-          </button>
+          </SubmitButton>
         </form>
       </div>
     </main>

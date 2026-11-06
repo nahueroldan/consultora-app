@@ -47,7 +47,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
             await confirmProfile(personId);
           }}
         >
-          <button type="submit" className="rounded-2xl bg-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-accent-hover">
+          <button type="submit" className="rounded-2xl bg-accent px-5 py-2.5 text-sm font-medium text-on-accent hover:bg-accent-hover">
             Confirmar mi perfil
           </button>
           <p className="mt-2 text-xs text-muted">

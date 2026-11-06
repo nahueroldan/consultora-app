@@ -81,7 +81,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
                 </select>
                 <input name="roleInSquad" placeholder="Rol en el squad" className="rounded-2xl border border-line bg-cream px-3 py-2 text-sm" />
                 <input name="allocationPct" type="number" min={1} max={100} defaultValue={100} className="rounded-2xl border border-line bg-cream px-3 py-2 text-sm" />
-                <button type="submit" className="rounded-2xl bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-hover">Sumar</button>
+                <button type="submit" className="rounded-2xl bg-accent px-4 py-2 text-sm font-medium text-on-accent hover:bg-accent-hover">Sumar</button>
               </ServerForm>
             )}
           </section>
@@ -92,7 +92,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
         <ServerForm action={createSquadAction} className="flex gap-2">
           <input type="hidden" name="projectId" value={project.id} />
           <input name="name" required placeholder="Nombre del nuevo squad" className="rounded-2xl border border-line bg-cream px-4 py-2.5 text-sm" />
-          <button type="submit" className="rounded-2xl bg-accent px-4 py-2.5 text-sm font-medium text-white hover:bg-accent-hover">Crear squad</button>
+          <button type="submit" className="rounded-2xl bg-accent px-4 py-2.5 text-sm font-medium text-on-accent hover:bg-accent-hover">Crear squad</button>
         </ServerForm>
       )}
     </article>

@@ -82,7 +82,7 @@ export function ProposalWizard({
 
   return (
     <>
-      <button type="button" onClick={() => setOpen(true)} className={`${buttonBase} bg-accent text-white hover:bg-accent-hover`}>
+      <button type="button" onClick={() => setOpen(true)} className={`${buttonBase} bg-accent text-on-accent hover:bg-accent-hover`}>
         Nueva propuesta
       </button>
 
@@ -99,7 +99,7 @@ export function ProposalWizard({
               <li key={label} className="flex flex-1 items-center gap-2">
                 <span
                   className={`flex size-7 shrink-0 items-center justify-center rounded-full font-mono text-xs ${
-                    i <= step ? "bg-accent text-white" : "bg-cream text-muted"
+                    i <= step ? "bg-accent text-on-accent" : "bg-cream text-muted"
                   }`}
                   aria-current={i === step ? "step" : undefined}
                 >
@@ -200,7 +200,7 @@ export function ProposalWizard({
                 <ChevronLeft size={16} aria-hidden /> Atrás
               </button>
               {step < STEPS.length - 1 ? (
-                <button type="button" onClick={next} className={`${buttonBase} bg-accent text-white hover:bg-accent-hover`}>
+                <button type="button" onClick={next} className={`${buttonBase} bg-accent text-on-accent hover:bg-accent-hover`}>
                   Siguiente <ChevronRight size={16} aria-hidden />
                 </button>
               ) : (

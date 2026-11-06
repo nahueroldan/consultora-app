@@ -7,7 +7,7 @@ import { PendingContext } from "@/components/ui/server-form";
 type Variant = "primary" | "secondary" | "ghost" | "danger";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-accent text-white hover:bg-accent-hover",
+  primary: "bg-accent text-on-accent hover:bg-accent-hover",
   secondary: "border border-line bg-surface text-ink hover:bg-accent-soft",
   ghost: "text-muted hover:bg-accent-soft hover:text-ink",
   danger: "bg-danger-soft text-danger hover:bg-danger hover:text-white",

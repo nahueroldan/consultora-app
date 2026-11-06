@@ -18,6 +18,10 @@
   --warning-soft: #fef3c7;
   --danger: #b91c1c;
   --danger-soft: #fee2e2;
+  --surface-rgb: 255 255 255;
+  /* Cristal: el usuario lo ajusta desde el menú (ver glass-control.tsx). */
+  --glass-alpha: 0.92;
+  --glass-blur: 12px;
   color-scheme: light;
 }
 
@@ -38,6 +42,7 @@
   --warning-soft: #422006;
   --danger: #fca5a5;
   --danger-soft: #450a0a;
+  --surface-rgb: 24 24 27;
   color-scheme: dark;
 }
 
@@ -88,4 +93,11 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* Superficie translúcida con desenfoque. Lo usan la barra superior y la inferior. */
+.glass {
+  background-color: rgb(var(--surface-rgb) / var(--glass-alpha));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
 }

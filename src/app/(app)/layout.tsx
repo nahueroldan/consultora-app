@@ -23,7 +23,7 @@ async function Shell({ children }: { children: React.ReactNode }) {
       email={user.email}
       role={user.role}
       isAdmin={can(user.role, "usuario:gestionar")}
-      tourClosed={tourClosed}
+      tourAutoOpen={!tourClosed && !needsLink}
       linkCandidates={linkCandidates}
       ownProfile={ownProfile}
     >

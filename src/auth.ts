@@ -31,9 +31,10 @@ const testProvider = Credentials({
     const email = normalizeEmail(String(credentials?.email ?? ""));
     const role = String(credentials?.role ?? "colaborador");
     if (!email || !(ROLES as readonly string[]).includes(role)) return null;
+    // Las cuentas de prueba no ven el recorrido: ya lo "cerraron" al crearse.
     await db
       .insert(schema.users)
-      .values({ email, role: role as Role })
+      .values({ email, role: role as Role, tourClosedAt: new Date() })
       .onConflictDoUpdate({ target: schema.users.email, set: { role: role as Role } });
     return { id: email, email, name: email };
   },

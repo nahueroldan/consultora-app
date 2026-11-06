@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { requireUser } from "@/lib/auth/session";
 import { getPerson } from "@/lib/data/people";
+import { canSeeField, normalizeVisibility } from "@/lib/profile/visibility";
 import { confirmProfile } from "@/app/(app)/directorio/actions";
 
 async function Content({ params }: { params: Promise<{ id: string }> }) {
@@ -21,6 +22,17 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
   const canSee = person.status === "confirmed" || user.role === "admin" || user.personId === personId;
   if (!canSee) notFound();
 
+  // Cada dato se muestra solo si el dueño lo dejó visible (el dueño y el admin ven todo).
+  const vis = normalizeVisibility(person.visibility);
+  const viewer = { personId: user.personId, role: user.role };
+  const show = (field: "position" | "city" | "country" | "linkedin" | "skills") =>
+    canSeeField(personId, field, vis, viewer);
+  const position = show("position") ? person.position : null;
+  const city = show("city") ? person.city : null;
+  const country = show("country") ? person.country : null;
+  const linkedin = show("linkedin") ? person.linkedin : null;
+  const skills = show("skills") ? person.skills : [];
+
   const canConfirm = person.status === "pending" && (user.role === "admin" || user.personId === personId);
 
   return (
@@ -28,11 +40,11 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
       <IconLink href="/directorio" label="Volver al directorio" Icon={ArrowLeft} />
       <header>
         <h1 className="font-display text-3xl tracking-tight">{person.firstName} {person.lastName}</h1>
-        <p className="text-muted">{person.position ?? "Sin puesto"} · {person.area ?? "Sin área"}</p>
+        <p className="text-muted">{position ?? "Sin puesto"} · {person.area ?? "Sin área"}</p>
         <p className="text-sm text-muted">
-          {[person.city, person.country].filter(Boolean).join(", ") || "Sin ubicación"}
-          {person.linkedin && (
-            <> · <a href={person.linkedin} className="underline" target="_blank" rel="noreferrer">LinkedIn</a></>
+          {[city, country].filter(Boolean).join(", ") || "Sin ubicación"}
+          {linkedin && (
+            <> · <a href={linkedin} className="underline" target="_blank" rel="noreferrer">LinkedIn</a></>
           )}
         </p>
         <p className="mt-2 text-sm">
@@ -59,11 +71,11 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
 
       <section className="rounded-3xl border border-line bg-surface p-5 shadow-sm">
         <h2 className="mb-3 font-display text-lg">Skills</h2>
-        {person.skills.length === 0 ? (
+        {skills.length === 0 ? (
           <p className="text-sm text-muted">Sin skills cargadas.</p>
         ) : (
           <ul className="flex flex-wrap gap-2">
-            {person.skills.map((s) => (
+            {skills.map((s) => (
               <li key={s.name} className="rounded-full bg-accent-soft px-3 py-1 text-sm text-accent">{s.name}</li>
             ))}
           </ul>

@@ -2,8 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { CircleHelp, LogOut, Settings, Users } from "lucide-react";
+import { CircleHelp, LogOut, Settings, UserRound, Users } from "lucide-react";
 import { useTour } from "@/components/onboarding/tour";
+import { MyProfileModal } from "@/components/profile/my-profile";
+import type { ActionResult } from "@/lib/form-result";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 /**
@@ -15,11 +17,16 @@ export function UserMenu({
   role,
   isAdmin,
   signOutAction,
+  ownProfile,
+  updateProfileAction,
 }: {
   email: string;
   role: string | null;
   isAdmin: boolean;
   signOutAction: () => Promise<void>;
+  /** Perfil vinculado a la cuenta; null si todavía no eligió uno. */
+  ownProfile: { position: string | null; city: string | null; country: string | null; linkedin: string | null; visibility: unknown } | null;
+  updateProfileAction: (fd: FormData) => Promise<ActionResult>;
 }) {
   const [open, setOpen] = useState(false);
   const { openTour } = useTour();
@@ -69,6 +76,25 @@ export function UserMenu({
           <ThemeToggle />
 
           <div className="space-y-1">
+            {ownProfile && (
+              <MyProfileModal
+                profile={ownProfile}
+                action={updateProfileAction}
+                trigger={(openProfile) => (
+                  <button
+                    role="menuitem"
+                    type="button"
+                    onClick={() => {
+                      setOpen(false);
+                      openProfile();
+                    }}
+                    className="flex w-full items-center gap-3 rounded-2xl px-3 py-2 text-left text-sm hover:bg-cream"
+                  >
+                    <UserRound size={16} aria-hidden /> Mi perfil
+                  </button>
+                )}
+              />
+            )}
             <button
               role="menuitem"
               type="button"

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { MobileNav } from "@/components/nav";
 import { LinkGate } from "@/components/profile/link-gate";
-import { claimProfileAction, requestLinkAction } from "@/app/(app)/perfil/actions";
+import { claimProfileAction, requestLinkAction, updateOwnProfileAction } from "@/app/(app)/perfil/actions";
 import { TourProvider } from "@/components/onboarding/tour";
 import { tourStepsFor } from "@/lib/onboarding/steps";
 import { closeTourAction } from "@/app/(app)/onboarding-actions";
@@ -21,6 +21,7 @@ export function AppShell({
   isAdmin,
   tourClosed,
   linkCandidates,
+  ownProfile,
 }: {
   children: React.ReactNode;
   email: string;
@@ -29,6 +30,7 @@ export function AppShell({
   tourClosed: boolean;
   /** Si viene, la cuenta todavía no tiene perfil vinculado: se muestra "¿Sos vos?". */
   linkCandidates: { id: number; firstName: string; lastName: string; position: string | null }[] | null;
+  ownProfile: { position: string | null; city: string | null; country: string | null; linkedin: string | null; visibility: unknown } | null;
 }) {
   const steps = tourStepsFor(role as Role | null);
   return (
@@ -42,7 +44,7 @@ export function AppShell({
               Consultora
             </Link>
           </div>
-          <UserMenu email={email} role={role} isAdmin={isAdmin} signOutAction={signOutAction} />
+          <UserMenu email={email} role={role} isAdmin={isAdmin} signOutAction={signOutAction} ownProfile={ownProfile} updateProfileAction={updateOwnProfileAction} />
         </div>
       </header>
 

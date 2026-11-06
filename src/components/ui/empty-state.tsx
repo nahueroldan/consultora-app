@@ -17,7 +17,7 @@ export function EmptyState({
       <p className="font-semibold">{title}</p>
       {description && <p className="mt-1 text-sm text-muted">{description}</p>}
       {actionHref && actionLabel && (
-        <Link href={actionHref} className={`${buttonBase} mt-4 bg-accent text-white hover:bg-accent-hover`}>
+        <Link href={actionHref} className={`${buttonBase} mt-4 bg-accent text-on-accent hover:bg-accent-hover`}>
           {actionLabel}
         </Link>
       )}

@@ -3,7 +3,6 @@ import { connection } from "next/server";
 import { FolderKanban, Users } from "lucide-react";
 import { Badge, LinkCard } from "@/components/ui/card";
 import { Dialog } from "@/components/ui/dialog";
-import { ServerForm } from "@/components/ui/server-form";
 import { SubmitButton } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { CardSkeleton } from "@/components/ui/skeleton";
@@ -31,9 +30,8 @@ async function Content() {
           <p className="text-sm text-muted">Cada proyecto tiene sus squads y sus propuestas.</p>
         </div>
         {canEdit && (
-          <Dialog triggerLabel="Nuevo proyecto" title="Nuevo proyecto" description="Solo el nombre es obligatorio.">
-            {() => (
-              <ServerForm action={createProjectAction} className="space-y-4">
+          <Dialog action={createProjectAction} triggerLabel="Nuevo proyecto" title="Nuevo proyecto" description="Solo el nombre es obligatorio.">
+            
                 <label className="block space-y-1 text-sm font-medium">
                   Nombre
                   <input name="name" required className={input} />
@@ -53,8 +51,7 @@ async function Content() {
                   </select>
                 </label>
                 <SubmitButton pendingLabel="Creando proyecto…" className="w-full">Crear proyecto</SubmitButton>
-              </ServerForm>
-            )}
+              
           </Dialog>
         )}
       </div>

@@ -30,7 +30,7 @@ async function Content({ params }: { params: Promise<{ id: string }> }) {
         </div>
         <a
           href={`/api/propuestas/${proposal.id}/pdf`}
-          className="rounded-2xl bg-accent px-5 py-2.5 text-sm font-medium text-white hover:bg-accent-hover"
+          className="rounded-2xl bg-accent px-5 py-2.5 text-sm font-medium text-on-accent hover:bg-accent-hover"
         >
           Descargar PDF
         </a>

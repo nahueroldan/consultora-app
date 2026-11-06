@@ -29,9 +29,8 @@ async function Content() {
           <h1 className="font-display text-3xl tracking-tight">Usuarios</h1>
           <p className="text-sm text-muted">Cuentas con acceso, sus roles y la persona vinculada.</p>
         </div>
-        <Dialog triggerLabel="Dar de alta" title="Dar de alta un usuario" description="La persona entra con su cuenta de Google.">
-          {() => (
-            <ServerForm action={addUserAction} className="space-y-4">
+        <Dialog action={addUserAction} triggerLabel="Dar de alta" title="Dar de alta un usuario" description="La persona entra con su cuenta de Google.">
+          
               <label className="block space-y-1 text-sm font-medium">
                 Email
                 <input name="email" type="email" required placeholder="email@ejemplo.com" className={input} />
@@ -43,8 +42,7 @@ async function Content() {
                 </select>
               </label>
               <SubmitButton pendingLabel="Guardando…" className="w-full">Dar de alta</SubmitButton>
-            </ServerForm>
-          )}
+            
         </Dialog>
       </div>
 

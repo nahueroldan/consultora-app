@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { House } from "lucide-react";
 import { MobileNav } from "@/components/nav";
 import { UserMenu } from "@/components/user-menu";
 import { signOut } from "@/auth";
@@ -22,17 +21,11 @@ export function AppShell({
 }) {
   return (
     <div className="flex min-h-screen flex-col">
-      {/* Barra superior mínima: marca, volver al inicio y configuración. */}
-      <header className="sticky top-0 z-20 flex items-center justify-between gap-4 border-b border-line/60 bg-cream/80 px-4 py-3 backdrop-blur md:px-8">
-        <Link href="/" className="brand-text font-display text-xl">
-          Consultora
-        </Link>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/"
-            className="flex items-center gap-2 rounded-2xl px-3 py-2 text-sm font-medium text-muted transition hover:bg-surface hover:text-ink"
-          >
-            <House size={16} aria-hidden /> Inicio
+      {/* Barra superior: la marca lleva al inicio; a la derecha, configuración. */}
+      <header className="sticky top-0 z-20 border-b border-line bg-cream/90 backdrop-blur">
+        <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-4 py-3 md:px-8">
+          <Link href="/" className="font-display text-xl text-ink">
+            Consultora
           </Link>
           <UserMenu email={email} role={role} isAdmin={isAdmin} signOutAction={signOutAction} />
         </div>

@@ -2,7 +2,6 @@ import { Suspense } from "react";
 import { connection } from "next/server";
 import { Card } from "@/components/ui/card";
 import { Dialog } from "@/components/ui/dialog";
-import { ServerForm } from "@/components/ui/server-form";
 import { EmptyState } from "@/components/ui/empty-state";
 import { CardSkeleton } from "@/components/ui/skeleton";
 import { SubmitButton } from "@/components/ui/button";
@@ -25,11 +24,8 @@ async function Content() {
           <p className="text-sm text-muted">Propuestas de producto y mejoras para el equipo.</p>
         </div>
         {canEdit && (
-          <Dialog triggerLabel="Nueva idea" title="Nueva idea" description="Contala en pocas palabras. Se puede ampliar después.">
-            {(close) => (
-              <ServerForm action={createIdeaAction} onSuccess={close}
-                className="space-y-4"
-              >
+          <Dialog action={createIdeaAction} triggerLabel="Nueva idea" title="Nueva idea" description="Contala en pocas palabras. Se puede ampliar después.">
+            
                 <label className="block space-y-1 text-sm font-medium">
                   Título
                   <input name="title" required className="w-full rounded-xl border border-line px-3 py-2 font-normal" />
@@ -39,8 +35,7 @@ async function Content() {
                   <textarea name="description" rows={4} className="w-full rounded-xl border border-line px-3 py-2 font-normal" />
                 </label>
                 <SubmitButton pendingLabel="Guardando idea…">Guardar idea</SubmitButton>
-              </ServerForm>
-            )}
+              
           </Dialog>
         )}
       </div>

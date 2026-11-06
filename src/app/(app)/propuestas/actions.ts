@@ -30,6 +30,8 @@ export async function createProposalAction(fd: FormData): Promise<ActionResult> 
     const title = requiredText(fd.get("title"), "El título");
     const discountPct = Number(fd.get("discountPct") || 0);
     const notes = String(fd.get("notes") ?? "").trim();
+    const ideaRaw = Number(fd.get("ideaId") || 0);
+    const ideaId = Number.isInteger(ideaRaw) && ideaRaw > 0 ? ideaRaw : null;
     if (!Number.isInteger(projectId)) return fail("Elegí un proyecto.");
     if ("error" in title) return fail(title.error);
 
@@ -44,6 +46,7 @@ export async function createProposalAction(fd: FormData): Promise<ActionResult> 
 
     const id = await createProposal({
       projectId,
+      ideaId,
       title: title.value,
       discountPct,
       notes: notes || null,

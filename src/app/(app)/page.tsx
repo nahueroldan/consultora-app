@@ -42,7 +42,8 @@ async function RecentProposals() {
 
 async function RecentIdeas() {
   await connection();
-  const ideas = (await listIdeas()).slice(0, 3);
+  const user = await requireUser();
+  const ideas = (await listIdeas({ userEmail: user.email, limit: 3 }));
   return (
     <Card className="space-y-4">
       <div className="flex items-center justify-between">

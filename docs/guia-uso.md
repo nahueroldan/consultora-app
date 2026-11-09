@@ -113,7 +113,7 @@ npm run build
 1. Mergear el PR a `main`. Vercel despliega solo.
 2. Si el PR trae migraciones nuevas, aplicarlas a producción **antes** de que el código las use:
    ```bash
-   PURL=$(neon connection-string main --project-id proud-water-55768950 --pooled | tail -1) && DATABASE_URL="$PURL" npx drizzle-kit migrate
+   PURL=$(neon connection-string main --project-id <ID_PROYECTO_NEON> --pooled | tail -1) && DATABASE_URL="$PURL" npx drizzle-kit migrate
    ```
 3. Revisar producción en el navegador.
 
